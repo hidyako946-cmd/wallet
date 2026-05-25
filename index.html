@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Планарный Кошелёк</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #141414;
+            --gold: #c9a44b;
+            --text: #e0d6c2;
+            --dim: #7a7a7a;
+            --accent: #7b5ea7;
+            --danger: #8b3a3a;
+            --success: #3a6b4a;
+            --radius: 16px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            padding: 16px;
+            padding-bottom: 100px;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .header { text-align: center; margin: 20px 0; }
+        .header h1 { font-size: 24px; color: var(--gold); }
+        .header p { font-size: 13px; color: var(--dim); }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tabs button {
+            flex: 1; padding: 14px; background: var(--card); border: 1px solid #222;
+            color: var(--dim); font-size: 15px; font-weight: bold; border-radius: var(--radius);
+            cursor: pointer;
+        }
+        .tabs button.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .list-item {
+            background: var(--card); border-radius: var(--radius); padding: 16px;
+            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+            border-left: 4px solid #444; cursor: pointer;
+        }
+        .list-item h3 { font-size: 17px; }
+        .list-item span { font-size: 20px; font-weight: bold; color: white; }
+        .btn {
+            background: var(--card); border: 1px solid #333; color: white;
+            padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold;
+            width: 100%; margin-top: 8px; cursor: pointer; text-align: center; display: block;
+        }
+        .btn-primary { background: var(--accent); border: none; }
+        .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+        .btn-small { padding: 8px 12px; font-size: 13px; width: auto; display: inline-block; }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            background: var(--card); width: 90%; max-width: 420px; padding: 24px;
+            border-radius: 20px; border: 1px solid #333;
+        }
+        .modal-box h2 { color: var(--gold); margin-bottom: 16px; font-size: 20px; }
+        input, select {
+            width: 100%; padding: 14px; margin: 8px 0; background: #000;
+            border: 1px solid #333; color: white; border-radius: 10px; font-size: 15px;
+            outline: none;
+        }
+        .row { display: flex; gap: 8px; margin-top: 16px; }
+        .row .btn { flex: 1; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
+        .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border-radius: 28px; cursor: pointer; }
+        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.2s; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(24px); }
+        .back-link { color: var(--gold); margin-bottom: 12px; display: block; cursor: pointer; font-weight: bold; }
+        .history-item { padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .history-item small { color: #555; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .text-accent { color: var(--accent); }
+        .empty { text-align: center; margin-top: 40px; color: var(--dim); }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>💎 ПЛАНАРНЫЙ КОШЕЛЁК</h1>
+    <p>S25 ULTRA EDITION</p>
+</div>
+
+<div class="tabs">
+    <button id="tabPlayers" class="active" onclick="switchTab('players')">🧙 Игроки</button>
+    <button id="tabOrders" onclick="switchTab('orders')">📦 Заказы</button>
+</div>
+
+<div id="app"></div>
+
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box" id="modalContent"></div>
+</div>
+
+<script>
+    var STORE = 'wallet_s25_v3';
+    var currentTab = 'players';
+    var currentPlayer = null;
+
+    function getData() {
+        var raw = localStorage.getItem(STORE);
+        if (!raw) return { players: {}, orders: [] };
+        try { return JSON.parse(raw); } catch(e) { return { players: {}, orders: [] }; }
+    }
+
+    function saveData(data) {
+        localStorage.setItem(STORE, JSON.stringify(data));
+    }
+
+    function genId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        currentPlayer = null;
+        document.getElementById('tabPlayers').className = (tab === 'players') ? 'active' : '';
+        document.getElementById('tabOrders').className = (tab === 'orders') ? 'active' : '';
+        render();
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    function openModal(html) {
+        document.getElementById('modalContent').innerHTML = html;
+        document.getElementById('modal').classList.add('active');
+    }
+
+    function goBack() {
+        currentPlayer = null;
+        render();
+    }
+
+    function render() {
+        var data = getData();
+        var app = document.getElementById('app');
+        var html = '';
+
+        if (currentTab === 'players') {
+            if (currentPlayer && data.players[currentPlayer]) {
+                var p = data.players[currentPlayer];
+                html += '<div class="back-link" onclick="goBack()">← Назад к списку</div>';
+                html += '<div class="list-item"><div><h3>' + currentPlayer + '</h3></div><span>' + (p.balance || 0) + ' ₽</span></div>';
+                html += '<button class="btn" onclick="showAddFunds()">💰 Пополнить баланс</button>';
+                html += '<button class="btn" style="color:var(--gold);border-color:var(--gold);" onclick="showSpend()">🛒 Покупка из альбома</button>';
+                html += '<button class="btn" style="color:var(--accent);border-color:var(--accent);" onclick="showOrder()">📦 Заказ под привоз</button>';
+                html += '<button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить игрока</button>';
+                html += '<h3 style="margin-top:20px;color:var(--dim);">📋 История операций</h3>';
+                if (!p.history || p.history.length === 0) {
+                    html += '<div class="empty">Нет операций</div>';
+                } else {
+                    var hist = p.history.slice().reverse();
+                    for (var i = 0; i < hist.length; i++) {
+                        var h = hist[i];
+                        var sign = '+';
+                        var cls = 'text-success';
+                        if (h.type === 'spend') { sign = '−'; cls = 'text-danger'; }
+                        if (h.type === 'order') { sign = '🔒'; cls = 'text-accent'; }
+                        html += '<div class="history-item"><span class="' + cls + '"><b>' + sign + (h.amount || 0) + ' ₽</b></span> — ' + (h.card || '') + '<br><small>' + (h.date || '') + '</small></div>';
+                    }
+                }
+            } else {
+                currentPlayer = null;
+                html += '<button class="btn btn-primary" onclick="showAddPlayer()">+ Добавить игрока</button>';
+                var names = Object.keys(data.players).sort();
+                if (names.length === 0) {
+                    html += '<div class="empty">Пока никого нет.<br>Добавь первого игрока.</div>';
+                } else {
+                    for (var i = 0; i < names.length; i++) {
+                        var name = names[i];
+                        var bal = data.players[name].balance || 0;
+                        html += '<div class="list-item" onclick="openPlayer(\'' + name + '\')"><div><h3>' + name + '</h3></div><span>' + bal + ' ₽</span></div>';
+                    }
+                }
+            }
+        } else {
+            var pending = [];
+            var done = [];
+            for (var i = 0; i < data.orders.length; i++) {
+                if (data.orders[i].status === 'pending') pending.push(data.orders[i]);
+                else done.push(data.orders[i]);
+            }
+            if (pending.length === 0 && done.length === 0) {
+                html += '<div class="empty">📭 Заказов пока нет</div>';
+            }
+            if (pending.length > 0) {
+                html += '<h3 style="color:var(--accent);margin-bottom:12px;">⏳ Ожидают закупки</h3>';
+                for (var i = 0; i < pending.length; i++) {
+                    var o = pending[i];
+                    html += '<div class="list-item" style="border-left-color:var(--accent);"><div><b>' + o.playerName + '</b><br>' + o.card + '<br><small>' + o.date + '</small></div><div style="text-align:right;"><span>' + o.amount + ' ₽</span><br><button class="btn btn-small" style="background:var(--success);color:white;margin-top:6px;" onclick="completeOrder(\'' + o.id + '\')">✅ Выдано</button></div></div>';
+                }
+            }
+            if (done.length > 0) {
+                html += '<h3 style="color:var(--dim);margin-top:20px;">✅ Выполненные</h3>';
+                var recent = done.slice(-5).reverse();
+                for (var i = 0; i < recent.length; i++) {
+                    var o = recent[i];
+                    html += '<div class="list-item" style="opacity:0.6;"><div><b>' + o.playerName + '</b><br>' + o.card + '</div><div>' + o.amount + ' ₽</div></div>';
+                }
+            }
+        }
+        app.innerHTML = html;
+    }
+
+    function openPlayer(name) {
+        currentPlayer = name;
+        render();
+    }
+
+    function showAddPlayer() {
+        var html = '<h2>✨ Новый игрок</h2>';
+        html += '<input id="pName" placeholder="Имя / Никнейм">';
+        html += '<select id="pMana"><option value="colorless">⬜ Бесцветный</option><option value="W">⚪ Белый</option><option value="U">🔵 Синий</option><option value="B">⚫ Чёрный</option><option value="R">🔴 Красный</option><option value="G">🟢 Зелёный</option></select>';
+        html += '<input id="pBal" type="number" placeholder="Начальный баланс" value="0">';
+        html += '<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addPlayer()">Создать</button></div>';
+        openModal(html);
+    }
+
+    function addPlayer() {
+        var name = document.getElementById('pName').value.trim();
+        if (!name) { alert('Введи имя!'); return; }
+        var mana = document.getElementById('pMana').value;
+        var bal = parseInt(document.getElementById('pBal').value) || 0;
+        var data = getData();
+        if (data.players[name]) { alert('Такой игрок уже есть!'); return; }
+        data.players[name] = { mana: mana, balance: bal, history: [] };
+        if (bal > 0) {
+            data.players[name].history.push({ date: new Date().toLocaleString('ru-RU'), amount: bal, type: 'add', card: 'Начальный депозит' });
+        }
+        saveData(data);
+        closeModal();
+        render();
+    }
+
+    function showAddFunds() {
+        var html = '<h2>💰 Пополнить: ' + currentPlayer + '</h2>';
+        html += '<input id="amount" type="number" placeholder="Сумма" value="500">';
+        html += '<input id="note" placeholder="Примечание">';
+        html += '<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addFunds()">Зачислить</button></div>';
+        openModal(html);
+    }
+
+    function addFunds() {
+        var amount = parseInt(document.getElementById('amount').value) || 0;
+        if (amount <= 0) { alert('Введи сумму!'); return; }
+        var note = document.getElementById('note').value.trim() || 'Пополнение';
+        var data = getData();
+        data.players[currentPlayer].balance += amount;
+        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: amount, type: 'add', card: note });
+        saveData(data);
+        closeModal();
+        render();
+    }
+
+    function showSpend() {
+        var html = '<h2>🛒 Покупка из альбома</h2><p style="color:var(--dim);">Игрок: <b>' + currentPlayer + '</b></p>';
+        html += '<input id="cardName" placeholder="Название карты">';
+        html += '<input id="amount" type="number" placeholder="Сумма">';
+        html += '<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn" style="background:var(--danger);" onclick="spendFunds()">Списать</button></div>';
+        openModal(html);
+    }
+
+    function spendFunds() {
+        var card = document.getElementById('cardName').value.trim() || 'Карта из альбома';
+        var amount = parseInt(document.getElementById('amount').value) || 0;
+        if (amount <= 0) { alert('Введи сумму!'); return; }
+        var data = getData();
+        if (data.players[currentPlayer].balance < amount) { alert('Недостаточно средств!'); return; }
+        data.players[currentPlayer].balance -= amount;
+        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: amount, type: 'spend', card: card });
+        saveData(data);
+        closeModal();
+        render();
+    }
+
+    function showOrder() {
+        var html = '<h2>📦 Заказ под привоз</h2><p style="color:var(--dim);">Игрок: <b>' + currentPlayer + '</b></p>';
+        html += '<input id="cardName" placeholder="Название карты">';
+        html += '<input id="basePrice" type="number" placeholder="Базовая цена" oninput="updateTotal()">';
+        html += '<div class="toggle-row"><span>Наценка за заказ <b style="color:var(--accent);">+20%</b></span><label class="switch"><input type="checkbox" id="commission" checked onchange="updateTotal()"><span class="slider"></span></label></div>';
+        html += '<p style="text-align:right;font-size:16px;">Итог: <b id="totalPrice" style="color:white;">0 ₽</b></p>';
+        html += '<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="placeOrder()">Создать заявку</button></div>';
+        openModal(html);
+    }
+
+    function updateTotal() {
+        var base = parseInt(document.getElementById('basePrice').value) || 0;
+        var comm = document.getElementById('commission').checked;
+        var total = comm ? Math.round(base * 1.2) : base;
+        document.getElementById('totalPrice').innerText = total + ' ₽';
+    }
+
+    function placeOrder() {
+        var card = document.getElementById('cardName').value.trim();
+        var base = parseInt(document.getElementById('basePrice').value) || 0;
+        var comm = document.getElementById('commission').checked;
+        var total = comm ? Math.round(base * 1.2) : base;
+        if (!card || total <= 0) { alert('Введи название и цену!'); return; }
+        var data = getData();
+        if (data.players[currentPlayer].balance < total) { alert('Недостаточно средств!'); return; }
+        data.players[currentPlayer].balance -= total;
+        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: total, type: 'order', card: card + ' (ЗАКАЗ)' });
+        data.orders.push({ id: genId(), playerName: currentPlayer, card: card, amount: total, status: 'pending', date: new Date().toLocaleString('ru-RU') });
+        saveData(data);
+        closeModal();
+        render();
+    }
+
+    function completeOrder(id) {
+        var data = getData();
+        for (var i = 0; i < data.orders.length; i++) {
+            if (data.orders[i].id === id) { data.orders[i].status = 'done'; break; }
+        }
+        saveData(data);
+        render();
+    }
+
+    function deletePlayer() {
+        if (!confirm('Удалить игрока "' + currentPlayer + '" и всю его историю?')) return;
+        var data = getData();
+        delete data.players[currentPlayer];
+        currentPlayer = null;
+        saveData(data);
+        render();
+    }
+
+    render();
+</script>
+</body>
+</html>
