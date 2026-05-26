@@ -65,19 +65,26 @@
         .participant-row {
             background: var(--card-bg); border-radius: 12px; padding: 14px;
             margin-bottom: 8px; border: 1px solid #222;
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 8px;
         }
-        .participant-row .info { flex: 1; min-width: 0; }
         .participant-row .info h4 { font-size: 15px; margin-bottom: 2px; }
         .participant-row .info .deck { font-size: 12px; color: var(--dim); }
+        .participant-row .info .commanders { font-size: 11px; color: var(--accent); margin-top: 2px; }
         .participant-row .paid-badge {
             padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold;
             cursor: pointer; border: 2px solid #333; min-width: 90px; text-align: center;
-            transition: all 0.2s;
+            transition: all 0.2s; display: inline-block; margin-top: 6px;
         }
         .paid-badge.paid { background: var(--success); border-color: var(--success); color: white; }
         .paid-badge.unpaid { background: transparent; border-color: var(--danger); color: var(--danger); }
+
+        /* Prize fund */
+        .prize-fund {
+            background: linear-gradient(135deg, #1a3a2a, #0a1a0a);
+            border: 2px solid var(--tournament); border-radius: var(--radius);
+            padding: 16px; margin: 16px 0; text-align: center;
+        }
+        .prize-fund h3 { font-size: 14px; color: var(--dim); margin-bottom: 4px; }
+        .prize-fund .amount { font-size: 28px; font-weight: bold; color: var(--gold); }
 
         /* Sale card */
         .sale-item {
@@ -86,7 +93,6 @@
         }
         .sale-item h3 { font-size: 17px; color: var(--gold-light); margin-bottom: 4px; }
         .sale-item .oracle { font-size: 12px; color: var(--dim); margin: 6px 0; padding: 8px; background: #0a0a0a; border-radius: 8px; font-style: italic; line-height: 1.4; }
-        .sale-item .meta { font-size: 12px; color: var(--dim); margin-bottom: 6px; }
         .sale-item .price { font-size: 20px; font-weight: bold; color: white; }
         .sale-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .sale-actions button { flex: 1; min-width: 60px; }
@@ -98,10 +104,7 @@
             background: #1a1a1a; border: 1px solid #333; border-radius: 0 0 10px 10px;
             max-height: 200px; overflow-y: auto; display: none;
         }
-        .autocomplete-list div {
-            padding: 10px 14px; cursor: pointer; font-size: 14px;
-            border-bottom: 1px solid #222; color: #ccc;
-        }
+        .autocomplete-list div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #222; color: #ccc; }
         .autocomplete-list div:hover { background: var(--accent); color: white; }
 
         /* Task card */
@@ -165,11 +168,11 @@
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
         .text-accent { color: var(--accent); }
-        .text-warning { color: var(--warning); }
         .empty { text-align: center; margin-top: 40px; color: var(--dim); }
         .stats { font-size: 13px; color: var(--dim); margin-bottom: 12px; }
         .breadcrumb { font-size: 13px; color: var(--dim); margin-bottom: 12px; }
         .breadcrumb span { color: var(--gold); cursor: pointer; }
+        .backup-info { font-size: 11px; color: #444; text-align: center; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -198,12 +201,12 @@
     // ──────────────────────────────────────
     // ХРАНИЛИЩЕ
     // ──────────────────────────────────────
-    var STORE = 'clown_council_v5';
+    var STORE = 'clown_council_v6';
 
     function getData() {
         var raw = localStorage.getItem(STORE);
-        if (!raw) return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [] };
-        try { return JSON.parse(raw); } catch(e) { return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [] }; }
+        if (!raw) return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null };
+        try { return JSON.parse(raw); } catch(e) { return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null }; }
     }
 
     function saveData(data) {
@@ -212,6 +215,90 @@
     }
 
     function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+
+    // ──────────────────────────────────────
+    // АВТОСОХРАНЕНИЕ РАЗ В НЕДЕЛЮ
+    // ──────────────────────────────────────
+    function checkAutoBackup() {
+        var data = getData();
+        var now = new Date();
+        var last = data.lastBackup ? new Date(data.lastBackup) : null;
+        var oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+        if (!last || (now - last) >= oneWeek) {
+            performBackup(data);
+            data.lastBackup = now.toISOString();
+            saveData(data);
+        }
+    }
+
+    function performBackup(data) {
+        var csv = '\uFEFF';
+        csv += '=== The Clown\'s Council - БЭКАП ===\n';
+        csv += 'Дата: ' + new Date().toLocaleString('ru-RU') + '\n\n';
+
+        // Игроки
+        csv += '--- ИГРОКИ ---\n';
+        csv += 'Имя,Баланс\n';
+        var pnames = Object.keys(data.players).sort();
+        for (var i = 0; i < pnames.length; i++) {
+            csv += pnames[i] + ',' + (data.players[pnames[i]].balance || 0) + '\n';
+        }
+
+        // На продажу
+        csv += '\n--- НА ПРОДАЖУ ---\n';
+        csv += 'Название,Сет,Номер,Состояние,Фойл,Цена\n';
+        for (var i = 0; i < data.saleCards.length; i++) {
+            var c = data.saleCards[i];
+            csv += '"' + (c.name||'') + '","' + (c.set||'') + '","' + (c.collector||'') + '","' + (c.condition||'') + '","' + (c.foil?'Да':'Нет') + '","' + (c.price||'') + '"\n';
+        }
+
+        // Заказы
+        csv += '\n--- ЗАКАЗЫ ---\n';
+        csv += 'Игрок,Карта,Сумма,Статус,Дата\n';
+        for (var i = 0; i < data.orders.length; i++) {
+            var o = data.orders[i];
+            csv += '"' + (o.playerName||'') + '","' + (o.card||'') + '",' + (o.amount||0) + ',"' + (o.status||'') + '","' + (o.date||'') + '"\n';
+        }
+
+        // Задачи
+        csv += '\n--- ЗАДАЧИ ---\n';
+        csv += 'Папка,Задача,Описание,Цена,Ссылка,Выполнено\n';
+        for (var i = 0; i < data.taskFolders.length; i++) {
+            var f = data.taskFolders[i];
+            for (var j = 0; j < f.tasks.length; j++) {
+                var t = f.tasks[j];
+                csv += '"' + (f.name||'') + '","' + (t.title||'') + '","' + (t.desc||'') + '","' + (t.price||'') + '","' + (t.link||'') + '","' + (t.done?'Да':'Нет') + '"\n';
+            }
+        }
+
+        // Турниры
+        csv += '\n--- ТУРНИРЫ ---\n';
+        for (var i = 0; i < data.tournaments.length; i++) {
+            var trn = data.tournaments[i];
+            csv += '\nТурнир: ' + (trn.name||'') + '\n';
+            csv += 'Игрок,Колода,Командир,Партнёр,Компаньон,Оплата\n';
+            for (var j = 0; j < trn.participants.length; j++) {
+                var p = trn.participants[j];
+                csv += '"' + (p.name||'') + '","' + (p.deck||'') + '","' + (p.commander||'') + '","' + (p.partner||'') + '","' + (p.companion||'') + '","' + (p.paid?'Оплатил':'Не оплатил') + '"\n';
+            }
+        }
+
+        // Скачиваем
+        downloadFile('clown_council_backup_' + new Date().toISOString().slice(0,10) + '.csv', csv);
+    }
+
+    function downloadFile(filename, content) {
+        var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
 
     // ──────────────────────────────────────
     // НАВИГАЦИЯ
@@ -256,7 +343,21 @@
         else if (currentTab === 'orders') html = renderOrders(data);
         else if (currentTab === 'tasks') html = renderTasks(data);
         else if (currentTab === 'tournaments') html = renderTournaments(data);
+
+        // Инфа о бэкапе
+        var lastBackup = data.lastBackup ? new Date(data.lastBackup).toLocaleString('ru-RU') : 'ещё не было';
+        html += '<div class="backup-info">💾 Автобэкап раз в неделю | Последний: ' + lastBackup + ' | <span style="color:var(--gold);cursor:pointer;" onclick="manualBackup()">Сделать сейчас</span></div>';
+
         app.innerHTML = html;
+    }
+
+    function manualBackup() {
+        var data = getData();
+        performBackup(data);
+        data.lastBackup = new Date().toISOString();
+        saveData(data);
+        render();
+        alert('Бэкап сохранён!');
     }
 
     // ──────────────────────────────────────
@@ -273,9 +374,8 @@
             html += '<button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button>';
             html += '<button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button>';
             html += '<h3 style="margin-top:20px;color:var(--dim);">📋 История</h3>';
-            if (!p.history || p.history.length === 0) {
-                html += '<div class="empty">Нет операций</div>';
-            } else {
+            if (!p.history || p.history.length === 0) html += '<div class="empty">Нет операций</div>';
+            else {
                 var hist = p.history.slice().reverse();
                 for (var i = 0; i < hist.length; i++) {
                     var h = hist[i];
@@ -386,13 +486,12 @@
     function openFolder(id) { currentFolder = id; render(); }
 
     // ──────────────────────────────────────
-    // ВКЛАДКА: ТУРНИРЫ (НОВАЯ!)
+    // ВКЛАДКА: ТУРНИРЫ
     // ──────────────────────────────────────
     function renderTournaments(data) {
         var html = '';
         var tournaments = data.tournaments || [];
 
-        // Внутри турнира
         if (currentTournament) {
             var trn = null;
             for (var i = 0; i < tournaments.length; i++) { if (tournaments[i].id === currentTournament) { trn = tournaments[i]; break; } }
@@ -400,52 +499,59 @@
 
             var participants = trn.participants || [];
             var paidCount = participants.filter(function(p){return p.paid;}).length;
+            var prizeFund = 0;
+            for (var i = 0; i < participants.length; i++) { if (participants[i].paid) prizeFund += (parseInt(participants[i].entryFee) || 500); }
 
             html += '<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все турниры</span> → 🏟 ' + trn.name + '</div>';
+
+            // Призовой фонд
+            html += '<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">' + prizeFund.toLocaleString() + ' ₽</div><div style="font-size:12px;color:var(--dim);">Оплатили: ' + paidCount + ' чел.</div></div>';
+
             html += '<div class="stats">👥 Участников: <b>' + participants.length + '</b> | 💰 Оплатили: <b>' + paidCount + '</b></div>';
 
-            // Кнопки
             html += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
             html += '<button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Добавить игрока</button>';
             html += '<button class="btn btn-export" style="flex:1;" onclick="exportTournament(\'' + trn.id + '\')">📥 Excel</button>';
             html += '</div>';
 
-            // Список участников
             if (participants.length === 0) {
-                html += '<div class="empty">Нет участников. Добавь первого!</div>';
+                html += '<div class="empty">Нет участников.</div>';
             } else {
                 for (var i = 0; i < participants.length; i++) {
                     var p = participants[i];
                     html += '<div class="participant-row">';
-                    html += '<div class="info"><h4>👤 ' + (p.name || '???') + '</h4><div class="deck">🃏 ' + (p.deck || 'Колода не указана') + '</div></div>';
+                    html += '<div class="info"><h4>👤 ' + (p.name || '???') + '</h4>';
+                    html += '<div class="deck">🃏 Колода: ' + (p.deck || '—') + '</div>';
+                    if (p.commander || p.partner || p.companion) {
+                        html += '<div class="commanders">';
+                        if (p.commander) html += '🎖 Командир: ' + p.commander + ' ';
+                        if (p.partner) html += '🤝 Партнёр: ' + p.partner + ' ';
+                        if (p.companion) html += '🐾 Компаньон: ' + p.companion;
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                    html += '<div style="display:flex;align-items:center;gap:8px;">';
                     html += '<div class="paid-badge ' + (p.paid ? 'paid' : 'unpaid') + '" onclick="togglePaid(\'' + p.id + '\')">' + (p.paid ? '✅ Оплатил' : '❌ Не оплатил') + '</div>';
                     html += '<button class="btn btn-small" style="background:var(--danger);" onclick="deleteParticipant(\'' + p.id + '\')">🗑</button>';
+                    html += '</div>';
                     html += '</div>';
                 }
             }
 
-            // Низ: кнопки турнира
             html += '<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;">';
             html += '<button class="btn btn-warning" onclick="editTournament(\'' + trn.id + '\')">✏️ Переименовать</button>';
             html += '<button class="btn btn-danger" onclick="deleteTournament(\'' + trn.id + '\')">🗑 Удалить турнир</button>';
             html += '</div>';
-
             return html;
         }
 
-        // Список турниров
         html += '<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новый турнир</button>';
-        if (tournaments.length === 0) {
-            html += '<div class="empty">Нет турниров. Создай первый!</div>';
-        } else {
-            for (var i = 0; i < tournaments.length; i++) {
-                var t = tournaments[i];
-                var pCount = (t.participants || []).length;
-                var pPaid = (t.participants || []).filter(function(p){return p.paid;}).length;
-                html += '<div class="folder-item tournament" onclick="openTournament(\'' + t.id + '\')">';
-                html += '<div><h3>🏟 ' + (t.name || 'Без имени') + '</h3><div class="folder-stats">' + pCount + ' игроков, ' + pPaid + ' оплатили</div></div>';
-                html += '<span style="color:var(--dim);">→</span></div>';
-            }
+        if (tournaments.length === 0) html += '<div class="empty">Нет турниров.</div>';
+        else for (var i = 0; i < tournaments.length; i++) {
+            var t = tournaments[i];
+            var pCount = (t.participants || []).length;
+            var pPaid = (t.participants || []).filter(function(p){return p.paid;}).length;
+            html += '<div class="folder-item tournament" onclick="openTournament(\'' + t.id + '\')"><div><h3>🏟 ' + (t.name || 'Без имени') + '</h3><div class="folder-stats">' + pCount + ' игроков, ' + pPaid + ' оплатили</div></div><span style="color:var(--dim);">→</span></div>';
         }
         return html;
     }
@@ -545,23 +651,31 @@
     // ──────────────────────────────────────
     // МОДАЛКИ: ТУРНИРЫ
     // ──────────────────────────────────────
-    function showAddTournament() { openModal('<h2>🏟 Новый турнир</h2><input id="trnName" placeholder="Название турнира"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>'); }
-    function addTournament() { var n = document.getElementById('trnName').value.trim(); if (!n) return alert('Введи название!'); var d = getData(); d.tournaments.push({ id: genId(), name: n, participants: [] }); saveData(d); closeModal(); render(); }
-    function editTournament(id) { var d = getData(), t = null; for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { t = d.tournaments[i]; break; } } if (!t) return; openModal('<h2>✏️ Турнир</h2><input id="trnName" value="'+(t.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="saveTournament(\''+id+'\')">Сохранить</button></div>'); }
+    function showAddTournament() { openModal('<h2>🏟 Новый турнир</h2><input id="trnName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>'); }
+    function addTournament() { var n = document.getElementById('trnName').value.trim(); if (!n) return alert('Введи!'); var d = getData(); d.tournaments.push({ id: genId(), name: n, participants: [] }); saveData(d); closeModal(); render(); }
+    function editTournament(id) { var d = getData(), t = null; for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { t = d.tournaments[i]; break; } } if (!t) return; openModal('<h2>✏️</h2><input id="trnName" value="'+(t.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="saveTournament(\''+id+'\')">Сохранить</button></div>'); }
     function saveTournament(id) { var n = document.getElementById('trnName').value.trim(); if (!n) return; var d = getData(); for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { d.tournaments[i].name = n; break; } } saveData(d); closeModal(); render(); }
-    function deleteTournament(id) { if (!confirm('Удалить турнир и всех участников?')) return; var d = getData(); d.tournaments = d.tournaments.filter(function(t) { return t.id !== id; }); currentTournament = null; saveData(d); render(); }
+    function deleteTournament(id) { if (!confirm('Удалить?')) return; var d = getData(); d.tournaments = d.tournaments.filter(function(t) { return t.id !== id; }); currentTournament = null; saveData(d); render(); }
 
     function showAddParticipant() {
-        openModal('<h2>👤 Добавить игрока</h2><input id="partName" placeholder="Имя игрока"><input id="partDeck" placeholder="Название колоды"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addParticipant()">Добавить</button></div>');
+        openModal('<h2>👤 Игрок</h2><input id="partName" placeholder="Имя игрока"><input id="partDeck" placeholder="Название колоды"><input id="partCommander" placeholder="Командир"><input id="partPartner" placeholder="Партнёр"><input id="partCompanion" placeholder="Компаньон"><input id="partFee" type="number" placeholder="Взнос (₽)" value="500"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addParticipant()">Добавить</button></div>');
     }
     function addParticipant() {
         var name = document.getElementById('partName').value.trim();
-        var deck = document.getElementById('partDeck').value.trim();
         if (!name) return alert('Введи имя!');
         var d = getData();
         for (var i = 0; i < d.tournaments.length; i++) {
             if (d.tournaments[i].id === currentTournament) {
-                d.tournaments[i].participants.push({ id: genId(), name: name, deck: deck, paid: false });
+                d.tournaments[i].participants.push({
+                    id: genId(),
+                    name: name,
+                    deck: document.getElementById('partDeck').value.trim(),
+                    commander: document.getElementById('partCommander').value.trim(),
+                    partner: document.getElementById('partPartner').value.trim(),
+                    companion: document.getElementById('partCompanion').value.trim(),
+                    entryFee: document.getElementById('partFee').value.trim() || '500',
+                    paid: false
+                });
                 break;
             }
         }
@@ -585,7 +699,7 @@
     }
 
     function deleteParticipant(id) {
-        if (!confirm('Удалить участника?')) return;
+        if (!confirm('Удалить?')) return;
         var d = getData();
         for (var i = 0; i < d.tournaments.length; i++) {
             if (d.tournaments[i].id === currentTournament) {
@@ -605,27 +719,37 @@
         for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { trn = d.tournaments[i]; break; } }
         if (!trn) return;
 
-        // BOM для корректного открытия в Excel с кириллицей
-        var csv = '\uFEFF';
-        csv += 'Игрок,Колода,Статус оплаты\n';
         var participants = trn.participants || [];
+        var paidCount = participants.filter(function(p){return p.paid;}).length;
+        var prizeFund = 0;
+        for (var i = 0; i < participants.length; i++) { if (participants[i].paid) prizeFund += (parseInt(participants[i].entryFee) || 500); }
+
+        var csv = '\uFEFF';
+        csv += 'Турнир:,' + (trn.name || '') + '\n';
+        csv += 'Дата экспорта:,' + new Date().toLocaleString('ru-RU') + '\n';
+        csv += 'Призовой фонд:,' + prizeFund + ' ₽\n';
+        csv += 'Оплатили:,' + paidCount + ' из ' + participants.length + '\n\n';
+
+        // Каждое поле в своей ячейке
+        csv += 'Игрок,Колода,Командир,Партнёр,Компаньон,Взнос,Статус оплаты\n';
         for (var i = 0; i < participants.length; i++) {
             var p = participants[i];
-            csv += '"' + (p.name || '') + '","' + (p.deck || '') + '","' + (p.paid ? 'Оплатил' : 'Не оплатил') + '"\n';
+            csv += '"' + (p.name || '') + '"';
+            csv += ',"' + (p.deck || '') + '"';
+            csv += ',"' + (p.commander || '') + '"';
+            csv += ',"' + (p.partner || '') + '"';
+            csv += ',"' + (p.companion || '') + '"';
+            csv += ',"' + (p.entryFee || '500') + ' ₽"';
+            csv += ',"' + (p.paid ? 'Оплатил' : 'Не оплатил') + '"\n';
         }
 
-        // Скачивание
-        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        var url = URL.createObjectURL(blob);
-        var link = document.createElement('a');
-        link.href = url;
-        link.download = (trn.name || 'tournament') + '.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        downloadFile((trn.name || 'tournament') + '.csv', csv);
     }
 
+    // ──────────────────────────────────────
+    // ЗАПУСК: проверка бэкапа при старте
+    // ──────────────────────────────────────
+    checkAutoBackup();
     render();
 </script>
 </body>
