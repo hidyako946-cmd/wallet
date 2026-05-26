@@ -6,42 +6,27 @@
     <title>The Clown's Council</title>
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card-bg: #141414;
-            --gold: #c9a44b;
-            --gold-light: #e0c878;
-            --text: #e0d6c2;
-            --dim: #7a7a7a;
-            --accent: #7b5ea7;
-            --danger: #8b3a3a;
-            --success: #3a6b4a;
-            --info: #3a6b8b;
-            --warning: #8b7a3a;
-            --tournament: #2a6b4a;
+            --bg: #0a0a0a; --card-bg: #141414; --gold: #c9a44b; --gold-light: #e0c878;
+            --text: #e0d6c2; --dim: #7a7a7a; --accent: #7b5ea7; --danger: #8b3a3a;
+            --success: #3a6b4a; --info: #3a6b8b; --warning: #8b7a3a; --tournament: #2a6b4a;
             --radius: 16px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: var(--bg); color: var(--text);
             font-family: 'Roboto', 'Segoe UI', sans-serif;
-            padding: 16px; padding-bottom: 120px;
-            min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+            padding: 16px; padding-bottom: 120px; min-height: 100vh;
+            -webkit-tap-highlight-color: transparent; user-select: none;
         }
         .header { text-align: center; margin: 20px 0 24px; }
         .header h1 { font-size: 26px; color: var(--gold); letter-spacing: 1px; }
-
-        /* Tabs */
         .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
         .tabs button {
             flex: 1; min-width: 55px; padding: 12px 4px; background: var(--card-bg);
             border: 1px solid #222; color: var(--dim); font-size: 11px; font-weight: bold;
-            border-radius: 12px; cursor: pointer; white-space: nowrap;
+            border-radius: 12px; cursor: pointer;
         }
         .tabs button.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-        /* Cards */
         .list-item {
             background: var(--card-bg); border-radius: var(--radius); padding: 16px;
             margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
@@ -49,8 +34,6 @@
         }
         .list-item h3 { font-size: 17px; }
         .list-item span { font-size: 20px; font-weight: bold; color: white; }
-
-        /* Folder / Tournament card */
         .folder-item {
             background: var(--card-bg); border-radius: var(--radius); padding: 16px;
             margin-bottom: 12px; border: 1px solid #333; cursor: pointer;
@@ -60,24 +43,20 @@
         .folder-item.tournament { border-left-color: var(--tournament); }
         .folder-item h3 { font-size: 16px; }
         .folder-item .folder-stats { font-size: 13px; color: var(--dim); }
-
-        /* Participant row */
         .participant-row {
             background: var(--card-bg); border-radius: 12px; padding: 14px;
             margin-bottom: 8px; border: 1px solid #222;
         }
         .participant-row .info h4 { font-size: 15px; margin-bottom: 2px; }
-        .participant-row .info .deck { font-size: 12px; color: var(--dim); }
+        .participant-row .info .deck { font-size: 12px; color: var(--info); word-break: break-all; }
         .participant-row .info .commanders { font-size: 11px; color: var(--accent); margin-top: 2px; }
-        .participant-row .paid-badge {
+        .paid-badge {
             padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold;
             cursor: pointer; border: 2px solid #333; min-width: 90px; text-align: center;
-            transition: all 0.2s; display: inline-block; margin-top: 6px;
+            display: inline-block; margin-top: 6px;
         }
         .paid-badge.paid { background: var(--success); border-color: var(--success); color: white; }
         .paid-badge.unpaid { background: transparent; border-color: var(--danger); color: var(--danger); }
-
-        /* Prize fund */
         .prize-fund {
             background: linear-gradient(135deg, #1a3a2a, #0a1a0a);
             border: 2px solid var(--tournament); border-radius: var(--radius);
@@ -86,7 +65,48 @@
         .prize-fund h3 { font-size: 14px; color: var(--dim); margin-bottom: 4px; }
         .prize-fund .amount { font-size: 28px; font-weight: bold; color: var(--gold); }
 
-        /* Sale card */
+        /* SWISS */
+        .swiss-round {
+            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
+            margin-bottom: 16px; border: 2px solid var(--tournament);
+        }
+        .swiss-round h3 { color: var(--gold); margin-bottom: 10px; text-align: center; }
+        .table-group {
+            background: #0a0a0a; border-radius: 12px; padding: 12px; margin: 8px 0;
+            border: 1px solid #333;
+        }
+        .table-group h4 { color: var(--accent); font-size: 13px; margin-bottom: 8px; text-align: center; }
+        .pairing-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px; margin: 4px 0; background: #111; border-radius: 8px; gap: 4px; flex-wrap: wrap;
+        }
+        .pairing-row .player { flex: 1; text-align: center; font-weight: bold; font-size: 12px; min-width: 0; word-break: break-all; }
+        .pairing-row .vs { color: var(--danger); font-weight: bold; margin: 0 4px; }
+        .pairing-row input { width: 50px; padding: 6px; text-align: center; background: #000; border: 1px solid #333; color: white; border-radius: 6px; font-size: 12px; }
+        .pairing-row .winner-btn {
+            padding: 4px 8px; border-radius: 6px; font-size: 10px; border: 1px solid #333;
+            cursor: pointer; background: var(--card-bg); color: var(--dim);
+        }
+        .pairing-row .winner-btn.selected { background: var(--success); color: white; border-color: var(--success); }
+        .standings-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        .standings-table th, .standings-table td {
+            padding: 8px; text-align: center; border-bottom: 1px solid #222; font-size: 13px;
+        }
+        .standings-table th { color: var(--gold); font-size: 11px; }
+        .standings-table tr.top4 { background: rgba(201,164,75,0.15); }
+        .final-bracket {
+            background: linear-gradient(135deg, #2a1a0a, #1a0a0a);
+            border: 2px solid var(--gold); border-radius: var(--radius);
+            padding: 20px; margin: 16px 0; text-align: center;
+        }
+        .final-bracket h2 { color: var(--gold); margin-bottom: 12px; }
+        .final-bracket .finalists { font-size: 16px; font-weight: bold; margin: 4px 0; }
+        .final-bracket .champion { font-size: 22px; color: var(--gold); font-weight: bold; }
+        .format-select { display: flex; gap: 8px; margin: 12px 0; }
+        .format-select button { flex: 1; padding: 12px; border-radius: 10px; font-weight: bold; border: 2px solid #333; background: var(--card-bg); color: var(--dim); cursor: pointer; }
+        .format-select button.active { border-color: var(--gold); color: var(--gold); background: #1a1a0a; }
+
+        /* Sale */
         .sale-item {
             background: var(--card-bg); border-radius: var(--radius); padding: 16px;
             margin-bottom: 12px; border: 1px solid #222;
@@ -96,8 +116,6 @@
         .sale-item .price { font-size: 20px; font-weight: bold; color: white; }
         .sale-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .sale-actions button { flex: 1; min-width: 60px; }
-
-        /* Autocomplete */
         .autocomplete-wrap { position: relative; }
         .autocomplete-list {
             position: absolute; top: 100%; left: 0; right: 0; z-index: 10;
@@ -106,8 +124,6 @@
         }
         .autocomplete-list div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #222; color: #ccc; }
         .autocomplete-list div:hover { background: var(--accent); color: white; }
-
-        /* Task card */
         .task-item {
             background: var(--card-bg); border-radius: var(--radius); padding: 14px;
             margin-bottom: 8px; border: 1px solid #222;
@@ -117,8 +133,6 @@
         .task-item .task-link { font-size: 11px; color: var(--info); word-break: break-all; }
         .task-done { opacity: 0.5; }
         .task-done h3 { text-decoration: line-through; }
-
-        /* Buttons */
         .btn {
             background: var(--card-bg); border: 1px solid #333; color: white;
             padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold;
@@ -136,8 +150,6 @@
         .btn-small { padding: 8px 12px; font-size: 12px; width: auto; display: inline-block; margin: 4px; }
         .btn-export { background: #1a5c2a; border: 1px solid var(--success); color: var(--success); }
         .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
-
-        /* Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center;
@@ -173,13 +185,13 @@
         .breadcrumb { font-size: 13px; color: var(--dim); margin-bottom: 12px; }
         .breadcrumb span { color: var(--gold); cursor: pointer; }
         .backup-info { font-size: 11px; color: #444; text-align: center; margin-top: 8px; }
+        .backup-info span { color: var(--gold); cursor: pointer; }
+        .backup-info .restore-link { color: var(--info); cursor: pointer; margin-left: 8px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>🎪 The Clown's Council</h1>
-</div>
+<div class="header"><h1>🎪 The Clown's Council</h1></div>
 
 <div class="tabs">
     <button id="tabPlayers" class="active" onclick="switchTab('players')">🧙</button>
@@ -190,567 +202,404 @@
 </div>
 
 <input type="text" class="search-box" id="searchBox" placeholder="🔍 Поиск..." style="display:none;" oninput="render()">
-
 <div id="app"></div>
-
-<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
-    <div class="modal-box" id="modalContent"></div>
-</div>
+<input type="file" id="restoreFileInput" accept=".csv" style="display:none;" onchange="handleRestoreFile(event)">
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modal-box" id="modalContent"></div></div>
 
 <script>
-    // ──────────────────────────────────────
-    // ХРАНИЛИЩЕ
-    // ──────────────────────────────────────
-    var STORE = 'clown_council_v6';
+var STORE = 'clown_council_v8';
+function getData() { var r = localStorage.getItem(STORE); if (!r) return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null }; try { return JSON.parse(r); } catch(e) { return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null }; } }
+function saveData(d) { try { localStorage.setItem(STORE, JSON.stringify(d)); } catch(e) { alert('Память переполнена!'); } }
+function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+function shuffle(arr) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
-    function getData() {
-        var raw = localStorage.getItem(STORE);
-        if (!raw) return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null };
-        try { return JSON.parse(raw); } catch(e) { return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], lastBackup: null }; }
-    }
+function checkAutoBackup() {
+    var d = getData(); var now = new Date(); var last = d.lastBackup ? new Date(d.lastBackup) : null;
+    if (!last || (now - last) >= 7*24*60*60*1000) { performBackup(d); d.lastBackup = now.toISOString(); saveData(d); }
+}
+function performBackup(d) {
+    var csv = '\uFEFF=== The Clown\'s Council - БЭКАП ===\nДата: ' + new Date().toLocaleString('ru-RU') + '\n\n--- ИГРОКИ ---\nИмя,Баланс\n';
+    var pn = Object.keys(d.players).sort(); for (var i = 0; i < pn.length; i++) csv += '"' + pn[i] + '",' + (d.players[pn[i]].balance || 0) + '\n';
+    csv += '\n--- НА ПРОДАЖУ ---\nНазвание,Сет,Номер,Состояние,Фойл,Цена,Oracle\n';
+    for (var i = 0; i < d.saleCards.length; i++) { var c = d.saleCards[i]; csv += '"'+(c.name||'')+'","'+(c.set||'')+'","'+(c.collector||'')+'","'+(c.condition||'')+'","'+(c.foil?'Да':'Нет')+'","'+(c.price||'')+'","'+(c.oracle||'').replace(/"/g,'""')+'"\n'; }
+    csv += '\n--- ЗАКАЗЫ ---\nИгрок,Карта,Сумма,Статус,Дата\n';
+    for (var i = 0; i < d.orders.length; i++) { var o = d.orders[i]; csv += '"'+(o.playerName||'')+'","'+(o.card||'')+'",'+(o.amount||0)+',"'+(o.status||'')+'","'+(o.date||'')+'"\n'; }
+    csv += '\n--- ЗАДАЧИ ---\nПапка,Задача,Описание,Цена,Ссылка,Выполнено\n';
+    for (var i = 0; i < d.taskFolders.length; i++) { var f = d.taskFolders[i]; for (var j = 0; j < f.tasks.length; j++) { var t = f.tasks[j]; csv += '"'+(f.name||'')+'","'+(t.title||'')+'","'+(t.desc||'')+'","'+(t.price||'')+'","'+(t.link||'')+'","'+(t.done?'Да':'Нет')+'"\n'; } }
+    csv += '\n--- ТУРНИРЫ ---\n';
+    for (var i = 0; i < d.tournaments.length; i++) { var trn = d.tournaments[i]; csv += '\nТурнир:,"'+(trn.name||'')+'"\nИгрок,Ссылка на колоду,Командир,Партнёр,Компаньон,Взнос,Оплата\n'; for (var j = 0; j < trn.participants.length; j++) { var p = trn.participants[j]; csv += '"'+(p.name||'')+'","'+(p.deckLink||'')+'","'+(p.commander||'')+'","'+(p.partner||'')+'","'+(p.companion||'')+'","'+(p.entryFee||'500')+'","'+(p.paid?'Оплатил':'Не оплатил')+'"\n'; } }
+    downloadFile('clown_council_backup_' + new Date().toISOString().slice(0,10) + '.csv', csv);
+}
+function downloadFile(fn, ct) { var b = new Blob([ct], { type: 'text/csv;charset=utf-8;' }); var u = URL.createObjectURL(b); var l = document.createElement('a'); l.href = u; l.download = fn; document.body.appendChild(l); l.click(); document.body.removeChild(l); URL.revokeObjectURL(u); }
+function triggerRestore() { document.getElementById('restoreFileInput').click(); }
+function handleRestoreFile(e) { var f = e.target.files[0]; if (!f) return; var r = new FileReader(); r.onload = function(ev) { var res = parseBackupCSV(ev.target.result); if (res) { saveData(res); alert('✅ Восстановлено!'); currentTab='players'; currentPlayer=null; currentFolder=null; currentTournament=null; render(); } else alert('❌ Ошибка формата.'); }; r.readAsText(f, 'UTF-8'); e.target.value = ''; }
+function parseBackupCSV(ct) { try { var d = { players:{}, orders:[], saleCards:[], taskFolders:[], tournaments:[], lastBackup: new Date().toISOString() }; var lines = ct.split('\n'); var sec = ''; for (var i = 0; i < lines.length; i++) { var l = lines[i].trim(); if (!l) continue; if (l.indexOf('--- ИГРОКИ ---')!==-1) { sec='players'; continue; } if (l.indexOf('--- НА ПРОДАЖУ ---')!==-1) { sec='sale'; continue; } if (l.indexOf('--- ЗАКАЗЫ ---')!==-1) { sec='orders'; continue; } if (l.indexOf('--- ЗАДАЧИ ---')!==-1) { sec='tasks'; continue; } if (l.indexOf('--- ТУРНИРЫ ---')!==-1) { sec='tournaments'; continue; } if (l.indexOf('Имя,Баланс')===0||l.indexOf('Название,Сет')===0||l.indexOf('Игрок,Карта')===0||l.indexOf('Папка,Задача')===0||l.indexOf('Игрок,Ссылка')===0||l.indexOf('Игрок,Колода')===0) continue; if (l.indexOf('===')===0||l.indexOf('Дата:')===0) continue; if (sec==='tournaments' && l.indexOf('Турнир:,')===0) { d.tournaments.push({id:genId(),name:(l.split(',')[1]||'').replace(/^"|"$/g,''),participants:[],swiss:null}); continue; } var parts = parseCSVLine(l); if (sec==='players' && parts.length>=2) { var nm=(parts[0]||'').replace(/^"|"$/g,'').trim(); if(nm)d.players[nm]={balance:parseInt(parts[1])||0,history:[]}; } else if (sec==='sale' && parts.length>=6) { d.saleCards.push({id:genId(),name:(parts[0]||'').replace(/^"|"$/g,''),set:(parts[1]||'').replace(/^"|"$/g,''),collector:(parts[2]||'').replace(/^"|"$/g,''),condition:(parts[3]||'').replace(/^"|"$/g,''),foil:(parts[4]||'').replace(/^"|"$/g,'')==='Да',price:(parts[5]||'').replace(/^"|"$/g,''),oracle:parts[6]?parts[6].replace(/^"|"$/g,''):''}); } else if (sec==='orders' && parts.length>=5) { d.orders.push({id:genId(),playerName:(parts[0]||'').replace(/^"|"$/g,''),card:(parts[1]||'').replace(/^"|"$/g,''),amount:parseInt(parts[2])||0,status:(parts[3]||'').replace(/^"|"$/g,''),date:(parts[4]||'').replace(/^"|"$/g,'')}); } else if (sec==='tasks' && parts.length>=6) { var fn=(parts[0]||'').replace(/^"|"$/g,'').trim(); if(!fn)continue; var fo=null;for(var j=0;j<d.taskFolders.length;j++){if(d.taskFolders[j].name===fn){fo=d.taskFolders[j];break;}} if(!fo){fo={id:genId(),name:fn,tasks:[]};d.taskFolders.push(fo);} fo.tasks.push({id:genId(),title:(parts[1]||'').replace(/^"|"$/g,''),desc:(parts[2]||'').replace(/^"|"$/g,''),price:(parts[3]||'').replace(/^"|"$/g,''),link:(parts[4]||'').replace(/^"|"$/g,''),done:(parts[5]||'').replace(/^"|"$/g,'')==='Да',date:''}); } else if (sec==='tournaments' && parts.length>=7 && d.tournaments.length>0) { var tr = d.tournaments[d.tournaments.length-1]; tr.participants.push({id:genId(),name:(parts[0]||'').replace(/^"|"$/g,''),deckLink:(parts[1]||'').replace(/^"|"$/g,''),commander:(parts[2]||'').replace(/^"|"$/g,''),partner:(parts[3]||'').replace(/^"|"$/g,''),companion:(parts[4]||'').replace(/^"|"$/g,''),entryFee:(parts[5]||'500').replace(/^"|"$/g,'').replace(' ₽',''),paid:(parts[6]||'').replace(/^"|"$/g,'')==='Оплатил'}); } } return d; } catch(e) { return null; } }
+function parseCSVLine(l) { var r=[],c='',q=false; for(var i=0;i<l.length;i++){var ch=l[i];if(ch==='"')q=!q;else if(ch===','&&!q){r.push(c);c='';}else c+=ch;} r.push(c); return r; }
 
-    function saveData(data) {
-        try { localStorage.setItem(STORE, JSON.stringify(data)); }
-        catch(e) { alert('Память переполнена!'); }
-    }
+var currentTab='players',currentPlayer=null,currentFolder=null,currentTournament=null;
+function switchTab(t) { currentTab=t; currentPlayer=null; currentFolder=null; currentTournament=null; var tabs=['players','sale','orders','tasks','tournaments']; for(var i=0;i<tabs.length;i++) document.getElementById('tab'+tabs[i].charAt(0).toUpperCase()+tabs[i].slice(1)).className=(t===tabs[i])?'active':''; document.getElementById('searchBox').style.display=(t==='sale'||t==='tasks')?'block':'none'; if(t!=='sale'&&t!=='tasks')document.getElementById('searchBox').value=''; render(); }
+function closeModal(){document.getElementById('modal').classList.remove('active');}
+function openModal(h){document.getElementById('modalContent').innerHTML=h;document.getElementById('modal').classList.add('active');}
+function goBack(){currentPlayer=null;render();}
+function goBackFolder(){currentFolder=null;render();}
+function goBackTournament(){currentTournament=null;render();}
 
-    function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+function render() {
+    var d=getData(),app=document.getElementById('app'),html='';
+    if(currentTab==='players')html=renderPlayers(d);
+    else if(currentTab==='sale')html=renderSale(d);
+    else if(currentTab==='orders')html=renderOrders(d);
+    else if(currentTab==='tasks')html=renderTasks(d);
+    else if(currentTab==='tournaments')html=renderTournaments(d);
+    var lb=d.lastBackup?new Date(d.lastBackup).toLocaleString('ru-RU'):'ещё не было';
+    html+='<div class="backup-info">💾 Бэкап: '+lb+' | <span onclick="manualBackup()">Сохранить</span> | <span class="restore-link" onclick="triggerRestore()">📥 Загрузить бэкап</span></div>';
+    app.innerHTML=html;
+}
+function manualBackup(){var d=getData();performBackup(d);d.lastBackup=new Date().toISOString();saveData(d);render();alert('✅ Бэкап сохранён!');}
 
-    // ──────────────────────────────────────
-    // АВТОСОХРАНЕНИЕ РАЗ В НЕДЕЛЮ
-    // ──────────────────────────────────────
-    function checkAutoBackup() {
-        var data = getData();
-        var now = new Date();
-        var last = data.lastBackup ? new Date(data.lastBackup) : null;
-        var oneWeek = 7 * 24 * 60 * 60 * 1000;
+function renderPlayers(d) {
+    var h='';
+    if(currentPlayer&&d.players[currentPlayer]){var p=d.players[currentPlayer];h+='<div class="back-link" onclick="goBack()">← Назад</div><div class="list-item"><div><h3>'+currentPlayer+'</h3></div><span>'+(p.balance||0)+' ₽</span></div><button class="btn" onclick="showAddFunds()">💰 Пополнить</button><button class="btn btn-gold" onclick="showSpend()">🛒 Покупка из альбома</button><button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button><button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button><h3 style="margin-top:20px;color:var(--dim);">📋 История</h3>';if(!p.history||!p.history.length)h+='<div class="empty">Нет операций</div>';else{var hist=p.history.slice().reverse();for(var i=0;i<hist.length;i++){var hi=hist[i],s='+',c='text-success';if(hi.type==='spend'){s='−';c='text-danger';}if(hi.type==='order'){s='🔒';c='text-accent';}h+='<div class="history-item"><span class="'+c+'"><b>'+s+(hi.amount||0)+' ₽</b></span> — '+(hi.card||'')+'<br><small>'+(hi.date||'')+'</small></div>';}}}
+    else{currentPlayer=null;h+='<button class="btn btn-primary" onclick="showAddPlayer()">+ Добавить игрока</button>';var n=Object.keys(d.players).sort();if(!n.length)h+='<div class="empty">Пока никого нет</div>';else for(var i=0;i<n.length;i++)h+='<div class="list-item" onclick="openPlayer(\''+n[i]+'\')"><div><h3>'+n[i]+'</h3></div><span>'+(d.players[n[i]].balance||0)+' ₽</span></div>';}
+    return h;
+}
+function openPlayer(n){currentPlayer=n;render();}
+function showAddPlayer(){openModal('<h2>✨ Новый игрок</h2><input id="pName" placeholder="Имя"><input id="pBal" type="number" value="0"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addPlayer()">Создать</button></div>');}
+function addPlayer(){var n=document.getElementById('pName').value.trim();if(!n)return alert('Введи!');var b=parseInt(document.getElementById('pBal').value)||0;var d=getData();if(d.players[n])return alert('Есть!');d.players[n]={balance:b,history:b>0?[{date:new Date().toLocaleString('ru-RU'),amount:b,type:'add',card:'Старт'}]:[]};saveData(d);closeModal();render();}
+function showAddFunds(){openModal('<h2>💰 '+currentPlayer+'</h2><input id="amount" type="number" value="500"><input id="note" placeholder="Примечание"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addFunds()">Зачислить</button></div>');}
+function addFunds(){var a=parseInt(document.getElementById('amount').value)||0;if(a<=0)return;var d=getData();d.players[currentPlayer].balance+=a;d.players[currentPlayer].history.push({date:new Date().toLocaleString('ru-RU'),amount:a,type:'add',card:document.getElementById('note').value.trim()||'Пополнение'});saveData(d);closeModal();render();}
+function showSpend(){openModal('<h2>🛒 '+currentPlayer+'</h2><input id="spendCard" placeholder="Карта"><input id="spendAmount" type="number"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-gold" style="background:var(--gold);color:#000;" onclick="spendFunds()">Списать</button></div>');}
+function spendFunds(){var a=parseInt(document.getElementById('spendAmount').value)||0;if(a<=0)return;var d=getData();if(d.players[currentPlayer].balance<a)return alert('Недостаточно!');d.players[currentPlayer].balance-=a;d.players[currentPlayer].history.push({date:new Date().toLocaleString('ru-RU'),amount:a,type:'spend',card:document.getElementById('spendCard').value.trim()||'Карта'});saveData(d);closeModal();render();}
+function showOrder(){openModal('<h2>📦 '+currentPlayer+'</h2><input id="orderCard" placeholder="Карта"><input id="orderBase" type="number" placeholder="Цена" oninput="updateOrderTotal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderComm" checked onchange="updateOrderTotal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-accent" style="background:var(--accent);" onclick="placeOrderFromPlayer()">Заказать</button></div>');}
+function updateOrderTotal(){document.getElementById('orderTotal').innerText=((document.getElementById('orderComm').checked?Math.round((parseInt(document.getElementById('orderBase').value)||0)*1.2):(parseInt(document.getElementById('orderBase').value)||0)))+' ₽';}
+function placeOrderFromPlayer(){var c=document.getElementById('orderCard').value.trim(),b=parseInt(document.getElementById('orderBase').value)||0,cm=document.getElementById('orderComm').checked,t=cm?Math.round(b*1.2):b;if(!c||t<=0)return alert('Заполни!');var d=getData();if(d.players[currentPlayer].balance<t)return alert('Недостаточно!');d.players[currentPlayer].balance-=t;d.players[currentPlayer].history.push({date:new Date().toLocaleString('ru-RU'),amount:t,type:'order',card:c+' (ЗАКАЗ)'});d.orders.push({id:genId(),playerName:currentPlayer,card:c,amount:t,status:'pending',date:new Date().toLocaleString('ru-RU')});saveData(d);closeModal();render();}
+function deletePlayer(){if(!confirm('Удалить?'))return;var d=getData();delete d.players[currentPlayer];currentPlayer=null;saveData(d);render();}
 
-        if (!last || (now - last) >= oneWeek) {
-            performBackup(data);
-            data.lastBackup = now.toISOString();
-            saveData(data);
-        }
-    }
+// SALE
+var autocompleteTimer=null;
+function showAddSaleCard(){openModal('<h2>💵 Карта</h2><div class="autocomplete-wrap"><input id="saleName" placeholder="Название" autocomplete="off" oninput="onNameInput()" onkeydown="onNameKeydown(event)"><div class="autocomplete-list" id="autocompleteList"></div></div><p id="oraclePreview"></p><input id="saleSet" placeholder="Сет"><input id="saleCollector" placeholder="Номер"><select id="saleCondition"><option>Near Mint</option><option>Lightly Played</option><option>Moderately Played</option></select><div class="toggle-row"><span>Фойл</span><label class="switch"><input type="checkbox" id="saleFoil"><span class="slider"></span></label></div><input id="salePrice" type="number" placeholder="Цена"><input type="hidden" id="saleOracle"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="addSaleCard()">Добавить</button></div>');}
+function onNameInput(){var v=document.getElementById('saleName').value.trim(),l=document.getElementById('autocompleteList');if(autocompleteTimer)clearTimeout(autocompleteTimer);if(v.length<2){l.style.display='none';return;}autocompleteTimer=setTimeout(function(){fetch('https://api.scryfall.com/cards/autocomplete?q='+encodeURIComponent(v)).then(function(r){return r.json();}).then(function(j){l.innerHTML='';if(j.data&&j.data.length>0){for(var i=0;i<Math.min(j.data.length,8);i++){var d=document.createElement('div');d.textContent=j.data[i];d.onclick=function(){document.getElementById('saleName').value=this.textContent;l.style.display='none';fetchOracle(this.textContent);};l.appendChild(d);}l.style.display='block';}else l.style.display='none';}).catch(function(){l.style.display='none';});},300);}
+function onNameKeydown(e){if(e.key==='Enter'){e.preventDefault();var f=document.getElementById('autocompleteList').querySelector('div');if(f)f.click();else fetchOracle(document.getElementById('saleName').value.trim());}}
+function fetchOracle(n){var o=document.getElementById('oraclePreview');if(!n)return;o.textContent='...';fetch('https://api.scryfall.com/cards/named?exact='+encodeURIComponent(n)).then(function(r){return r.json();}).then(function(j){if(j.oracle_text){o.textContent='📜 '+j.oracle_text;document.getElementById('saleOracle').value=j.oracle_text;}else o.textContent='-';}).catch(function(){o.textContent='-';});}
+function addSaleCard(){var n=document.getElementById('saleName').value.trim();if(!n)return alert('Введи!');var d=getData();d.saleCards.push({id:genId(),name:n,set:document.getElementById('saleSet').value.trim(),collector:document.getElementById('saleCollector').value.trim(),condition:document.getElementById('saleCondition').value,foil:document.getElementById('saleFoil').checked,price:document.getElementById('salePrice').value.trim(),oracle:document.getElementById('saleOracle').value.trim()});saveData(d);closeModal();render();}
+function editSaleCard(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;openModal('<h2>✏️</h2><input id="saleName" value="'+(c.name||'')+'"><input id="saleSet" value="'+(c.set||'')+'"><input id="saleCollector" value="'+(c.collector||'')+'"><select id="saleCondition"><option'+(c.condition==='Near Mint'?' selected':'')+'>Near Mint</option><option'+(c.condition==='Lightly Played'?' selected':'')+'>Lightly Played</option><option'+(c.condition==='Moderately Played'?' selected':'')+'>Moderately Played</option></select><div class="toggle-row"><span>Фойл</span><label class="switch"><input type="checkbox" id="saleFoil"'+(c.foil?' checked':'')+'><span class="slider"></span></label></div><input id="salePrice" type="number" value="'+(c.price||'')+'"><textarea id="saleOracle">'+(c.oracle||'')+'</textarea><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="saveSaleCard(\''+id+'\')">Сохранить</button></div>');}
+function saveSaleCard(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].name=document.getElementById('saleName').value.trim();d.saleCards[i].set=document.getElementById('saleSet').value.trim();d.saleCards[i].collector=document.getElementById('saleCollector').value.trim();d.saleCards[i].condition=document.getElementById('saleCondition').value;d.saleCards[i].foil=document.getElementById('saleFoil').checked;d.saleCards[i].price=document.getElementById('salePrice').value.trim();d.saleCards[i].oracle=document.getElementById('saleOracle').value.trim();break;}}saveData(d);closeModal();render();}
+function setSalePrice(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;openModal('<h2>💰</h2><p>'+c.name+'</p><input id="newPrice" type="number" value="'+(c.price||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-price-btn" onclick="saveSalePrice(\''+id+'\')">Сохранить</button></div>');}
+function saveSalePrice(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].price=document.getElementById('newPrice').value.trim();break;}}saveData(d);closeModal();render();}
+function sellToPlayer(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c||!c.price)return alert('Установи цену!');var n=Object.keys(d.players).sort();if(!n.length)return alert('Нет игроков!');var h='<h2>💵</h2><p>'+c.name+'</p><p style="font-size:18px;"><b>'+c.price+' ₽</b></p><select id="sellPlayer">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+' ('+(d.players[n[i]].balance||0)+' ₽)</option>';h+='</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="confirmSellToPlayer(\''+id+'\')">Продать</button></div>';openModal(h);}
+function confirmSellToPlayer(id){var pl=document.getElementById('sellPlayer').value.split(' (')[0],d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;var pr=parseInt(c.price)||0;if(d.players[pl].balance<pr)return alert('Недостаточно!');d.players[pl].balance-=pr;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:pr,type:'spend',card:c.name});d.saleCards=d.saleCards.filter(function(x){return x.id!==id;});saveData(d);closeModal();alert('Продано!');render();}
+function deleteSaleCard(id){if(!confirm('Удалить?'))return;var d=getData();d.saleCards=d.saleCards.filter(function(c){return c.id!==id;});saveData(d);render();}
+function clearSale(){if(!confirm('Очистить?'))return;var d=getData();d.saleCards=[];saveData(d);render();}
+function renderSale(d){var h='',s=(document.getElementById('searchBox').value||'').toLowerCase(),cards=d.saleCards||[],f=[];for(var i=0;i<cards.length;i++){if(s===''||(cards[i].name||'').toLowerCase().indexOf(s)!==-1||(cards[i].oracle||'').toLowerCase().indexOf(s)!==-1)f.push(cards[i]);}h+='<div class="stats">💵 Карт: <b>'+cards.length+'</b> | <b>'+f.length+'</b></div><button class="btn btn-sell-btn" onclick="showAddSaleCard()">+ Добавить</button>';if(cards.length)h+='<button class="btn btn-danger" style="margin-top:4px;" onclick="clearSale()">🗑 Очистить</button>';if(!f.length)h+='<div class="empty">'+(cards.length?'Ничего не найдено.':'Пусто.')+'</div>';else for(var i=0;i<f.length;i++){var c=f[i];h+='<div class="sale-item"><h3>🃏 '+(c.name||'???')+'</h3>';if(c.set||c.collector){h+='<div class="meta">';if(c.set)h+='<span>📗 '+c.set.toUpperCase()+'</span>';if(c.collector)h+='<span>#'+c.collector+'</span>';if(c.foil)h+='<span style="color:var(--gold);">✨ FOIL</span>';h+='</div>';}if(c.oracle)h+='<div class="oracle">'+c.oracle+'</div>';h+='<div class="price">'+(c.price?c.price+' ₽':'<span class="no-price">Цена не задана</span>')+'</div><div class="sale-actions"><button class="btn btn-small btn-sell-btn" onclick="sellToPlayer(\''+c.id+'\')">💵</button><button class="btn btn-small btn-price-btn" onclick="setSalePrice(\''+c.id+'\')">💰</button><button class="btn btn-small" style="background:var(--info);" onclick="editSaleCard(\''+c.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteSaleCard(\''+c.id+'\')">🗑</button></div></div>';}return h;}
 
-    function performBackup(data) {
-        var csv = '\uFEFF';
-        csv += '=== The Clown\'s Council - БЭКАП ===\n';
-        csv += 'Дата: ' + new Date().toLocaleString('ru-RU') + '\n\n';
+// ORDERS
+function renderOrders(d){var h='',p=[],done=[];for(var i=0;i<d.orders.length;i++){if(d.orders[i].status==='pending')p.push(d.orders[i]);else done.push(d.orders[i]);}h+='<button class="btn btn-primary" onclick="showAddOrder()">+ Новый заказ</button>';if(!p.length&&!done.length)h+='<div class="empty">📭 Заказов нет</div>';if(p.length){h+='<h3 style="color:var(--accent);margin:16px 0 8px;">⏳ Ожидают ('+p.length+')</h3>';for(var i=0;i<p.length;i++){var o=p[i];h+='<div class="list-item" style="border-left-color:var(--accent);"><div><b>'+o.playerName+'</b><br>'+o.card+'<br><small>'+o.date+'</small></div><div style="text-align:right;"><span>'+o.amount+' ₽</span><br><button class="btn btn-small" style="background:var(--success);" onclick="completeOrder(\''+o.id+'\')">✅</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteOrder(\''+o.id+'\')">🗑</button></div></div>';}}if(done.length){h+='<h3 style="color:var(--dim);margin-top:16px;">✅ Выполненные</h3>';for(var i=done.length-1;i>=Math.max(0,done.length-5);i--)h+='<div class="list-item" style="opacity:0.6;"><div><b>'+done[i].playerName+'</b><br>'+done[i].card+'</div><div>'+done[i].amount+' ₽</div></div>';}return h;}
+function showAddOrder(){var d=getData(),n=Object.keys(d.players).sort(),h='<h2>📦</h2><select id="orderPlayerGlobal">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+'</option>';h+='</select><input id="orderCardGlobal" placeholder="Карта"><input id="orderBaseGlobal" type="number" placeholder="Цена" oninput="updateOrderTotalGlobal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderCommGlobal" checked onchange="updateOrderTotalGlobal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotalGlobal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="placeOrderGlobal()">Заказать</button></div>';openModal(h);}
+function updateOrderTotalGlobal(){document.getElementById('orderTotalGlobal').innerText=((document.getElementById('orderCommGlobal').checked?Math.round((parseInt(document.getElementById('orderBaseGlobal').value)||0)*1.2):(parseInt(document.getElementById('orderBaseGlobal').value)||0)))+' ₽';}
+function placeOrderGlobal(){var pl=document.getElementById('orderPlayerGlobal').value,c=document.getElementById('orderCardGlobal').value.trim(),b=parseInt(document.getElementById('orderBaseGlobal').value)||0,cm=document.getElementById('orderCommGlobal').checked,t=cm?Math.round(b*1.2):b;if(!c||t<=0)return alert('Заполни!');var d=getData();if(d.players[pl].balance<t)return alert('Недостаточно!');d.players[pl].balance-=t;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:t,type:'order',card:c+' (ЗАКАЗ)'});d.orders.push({id:genId(),playerName:pl,card:c,amount:t,status:'pending',date:new Date().toLocaleString('ru-RU')});saveData(d);closeModal();render();}
+function completeOrder(id){var d=getData();for(var i=0;i<d.orders.length;i++){if(d.orders[i].id===id){d.orders[i].status='done';break;}}saveData(d);render();}
+function deleteOrder(id){if(!confirm('Удалить?'))return;var d=getData();d.orders=d.orders.filter(function(o){return o.id!==id;});saveData(d);render();}
 
-        // Игроки
-        csv += '--- ИГРОКИ ---\n';
-        csv += 'Имя,Баланс\n';
-        var pnames = Object.keys(data.players).sort();
-        for (var i = 0; i < pnames.length; i++) {
-            csv += pnames[i] + ',' + (data.players[pnames[i]].balance || 0) + '\n';
-        }
+// TASKS
+function renderTasks(d){var h='',folds=d.taskFolders||[];if(currentFolder){var fo=null;for(var i=0;i<folds.length;i++){if(folds[i].id===currentFolder){fo=folds[i];break;}}if(!fo){currentFolder=null;return renderTasks(d);}var ts=fo.tasks||[],s=(document.getElementById('searchBox').value||'').toLowerCase(),ft=[];for(var i=0;i<ts.length;i++){if(s===''||(ts[i].title||'').toLowerCase().indexOf(s)!==-1||(ts[i].desc||'').toLowerCase().indexOf(s)!==-1)ft.push(ts[i]);}h+='<div class="breadcrumb"><span onclick="goBackFolder()">📁 Все папки</span> → 📂 '+fo.name+'</div><button class="btn btn-info" onclick="showAddTask()">+ Новая задача</button><div class="stats">📋 Задач: <b>'+ts.length+'</b> | ✅ <b>'+ts.filter(function(t){return t.done;}).length+'</b></div>';if(!ft.length)h+='<div class="empty">'+(ts.length?'Ничего не найдено.':'Папка пуста.')+'</div>';else{ft.sort(function(a,b){return (a.done?1:0)-(b.done?1:0);});for(var i=0;i<ft.length;i++){var t=ft[i];h+='<div class="task-item'+(t.done?' task-done':'')+'"><div style="display:flex;justify-content:space-between;"><h3>'+(t.done?'✅ ':'⬜ ')+(t.title||'')+'</h3>'+(t.price?'<span style="color:var(--gold);">'+t.price+' ₽</span>':'')+'</div>';if(t.desc)h+='<div class="task-meta">'+t.desc+'</div>';if(t.link)h+='<div class="task-link">🔗 <a href="'+t.link+'" target="_blank">'+t.link+'</a></div>';h+='<div class="btn-row" style="margin-top:8px;"><button class="btn btn-small btn-sell-btn" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'↩':'✅')+'</button><button class="btn btn-small btn-price-btn" onclick="editTask(\''+t.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteTask(\''+t.id+'\')">🗑</button></div></div>';}}h+='<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editFolder(\''+fo.id+'\')">✏️</button><button class="btn btn-danger" onclick="deleteFolder(\''+fo.id+'\')">🗑</button></div>';return h;}h+='<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button>';if(!folds.length)h+='<div class="empty">Нет папок.</div>';else for(var i=0;i<folds.length;i++){var f=folds[i];h+='<div class="folder-item" onclick="openFolder(\''+f.id+'\')"><div><h3>📂 '+(f.name||'Без имени')+'</h3><div class="folder-stats">'+(f.tasks||[]).length+' задач</div></div><span>→</span></div>';}return h;}
+function openFolder(id){currentFolder=id;render();}
+function showAddFolder(){openModal('<h2>📁</h2><input id="folderName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="addFolder()">Создать</button></div>');}
+function addFolder(){var n=document.getElementById('folderName').value.trim();if(!n)return;var d=getData();d.taskFolders.push({id:genId(),name:n,tasks:[]});saveData(d);closeModal();render();}
+function editFolder(id){var d=getData(),f=null;for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===id){f=d.taskFolders[i];break;}}if(!f)return;openModal('<h2>✏️</h2><input id="folderName" value="'+(f.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="saveFolder(\''+id+'\')">Сохранить</button></div>');}
+function saveFolder(id){var n=document.getElementById('folderName').value.trim();if(!n)return;var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===id){d.taskFolders[i].name=n;break;}}saveData(d);closeModal();render();}
+function deleteFolder(id){if(!confirm('Удалить?'))return;var d=getData();d.taskFolders=d.taskFolders.filter(function(f){return f.id!==id;});currentFolder=null;saveData(d);render();}
+function showAddTask(){openModal('<h2>📋</h2><input id="taskTitle" placeholder="Название"><textarea id="taskDesc" placeholder="Описание"></textarea><input id="taskPrice" type="number" placeholder="Цена"><input id="taskLink" placeholder="Ссылка"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="addTask()">Создать</button></div>');}
+function addTask(){var t=document.getElementById('taskTitle').value.trim();if(!t)return;var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){d.taskFolders[i].tasks.push({id:genId(),title:t,desc:document.getElementById('taskDesc').value.trim(),price:document.getElementById('taskPrice').value.trim(),link:document.getElementById('taskLink').value.trim(),done:false,date:new Date().toLocaleString('ru-RU')});break;}}saveData(d);closeModal();render();}
+function editTask(id){var d=getData(),t=null;for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){t=d.taskFolders[i].tasks[j];break;}}break;}}if(!t)return;openModal('<h2>✏️</h2><input id="taskTitle" value="'+(t.title||'')+'"><textarea id="taskDesc">'+(t.desc||'')+'</textarea><input id="taskPrice" type="number" value="'+(t.price||'')+'"><input id="taskLink" value="'+(t.link||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="saveTask(\''+id+'\')">Сохранить</button></div>');}
+function saveTask(id){var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){d.taskFolders[i].tasks[j].title=document.getElementById('taskTitle').value.trim();d.taskFolders[i].tasks[j].desc=document.getElementById('taskDesc').value.trim();d.taskFolders[i].tasks[j].price=document.getElementById('taskPrice').value.trim();d.taskFolders[i].tasks[j].link=document.getElementById('taskLink').value.trim();break;}}break;}}saveData(d);closeModal();render();}
+function toggleTask(id){var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){d.taskFolders[i].tasks[j].done=!d.taskFolders[i].tasks[j].done;break;}}break;}}saveData(d);render();}
+function deleteTask(id){if(!confirm('Удалить?'))return;var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){d.taskFolders[i].tasks=d.taskFolders[i].tasks.filter(function(t){return t.id!==id;});break;}}saveData(d);render();}
 
-        // На продажу
-        csv += '\n--- НА ПРОДАЖУ ---\n';
-        csv += 'Название,Сет,Номер,Состояние,Фойл,Цена\n';
-        for (var i = 0; i < data.saleCards.length; i++) {
-            var c = data.saleCards[i];
-            csv += '"' + (c.name||'') + '","' + (c.set||'') + '","' + (c.collector||'') + '","' + (c.condition||'') + '","' + (c.foil?'Да':'Нет') + '","' + (c.price||'') + '"\n';
-        }
+// TOURNAMENTS + SWISS (2 or 4 players per table)
+function renderTournaments(d) {
+    var h='',trns=d.tournaments||[];
+    if(currentTournament){
+        var trn=null;for(var i=0;i<trns.length;i++){if(trns[i].id===currentTournament){trn=trns[i];break;}}
+        if(!trn){currentTournament=null;return renderTournaments(d);}
+        if(trn.swiss && trn.swiss.started) return renderSwiss(d,trn);
 
-        // Заказы
-        csv += '\n--- ЗАКАЗЫ ---\n';
-        csv += 'Игрок,Карта,Сумма,Статус,Дата\n';
-        for (var i = 0; i < data.orders.length; i++) {
-            var o = data.orders[i];
-            csv += '"' + (o.playerName||'') + '","' + (o.card||'') + '",' + (o.amount||0) + ',"' + (o.status||'') + '","' + (o.date||'') + '"\n';
-        }
+        var parts=trn.participants||[],pc=parts.filter(function(p){return p.paid;}).length,pf=0;
+        for(var i=0;i<parts.length;i++){if(parts[i].paid)pf+=(parseInt(parts[i].entryFee)||500);}
+        h+='<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все турниры</span> → 🏟 '+trn.name+'</div>';
+        h+='<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">'+pf.toLocaleString()+' ₽</div><div style="font-size:12px;color:var(--dim);">Оплатили: '+pc+' чел.</div></div>';
+        h+='<div class="stats">👥 Участников: <b>'+parts.length+'</b> | 💰 Оплатили: <b>'+pc+'</b></div>';
+        h+='<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Игрок</button><button class="btn btn-export" style="flex:1;" onclick="exportTournament(\''+trn.id+'\')">📥 Excel</button></div>';
 
-        // Задачи
-        csv += '\n--- ЗАДАЧИ ---\n';
-        csv += 'Папка,Задача,Описание,Цена,Ссылка,Выполнено\n';
-        for (var i = 0; i < data.taskFolders.length; i++) {
-            var f = data.taskFolders[i];
-            for (var j = 0; j < f.tasks.length; j++) {
-                var t = f.tasks[j];
-                csv += '"' + (f.name||'') + '","' + (t.title||'') + '","' + (t.desc||'') + '","' + (t.price||'') + '","' + (t.link||'') + '","' + (t.done?'Да':'Нет') + '"\n';
-            }
-        }
-
-        // Турниры
-        csv += '\n--- ТУРНИРЫ ---\n';
-        for (var i = 0; i < data.tournaments.length; i++) {
-            var trn = data.tournaments[i];
-            csv += '\nТурнир: ' + (trn.name||'') + '\n';
-            csv += 'Игрок,Колода,Командир,Партнёр,Компаньон,Оплата\n';
-            for (var j = 0; j < trn.participants.length; j++) {
-                var p = trn.participants[j];
-                csv += '"' + (p.name||'') + '","' + (p.deck||'') + '","' + (p.commander||'') + '","' + (p.partner||'') + '","' + (p.companion||'') + '","' + (p.paid?'Оплатил':'Не оплатил') + '"\n';
-            }
-        }
-
-        // Скачиваем
-        downloadFile('clown_council_backup_' + new Date().toISOString().slice(0,10) + '.csv', csv);
-    }
-
-    function downloadFile(filename, content) {
-        var blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-        var url = URL.createObjectURL(blob);
-        var link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    // ──────────────────────────────────────
-    // НАВИГАЦИЯ
-    // ──────────────────────────────────────
-    var currentTab = 'players';
-    var currentPlayer = null;
-    var currentFolder = null;
-    var currentTournament = null;
-
-    function switchTab(tab) {
-        currentTab = tab;
-        currentPlayer = null;
-        currentFolder = null;
-        currentTournament = null;
-        var tabs = ['players','sale','orders','tasks','tournaments'];
-        for (var i = 0; i < tabs.length; i++) {
-            document.getElementById('tab' + tabs[i].charAt(0).toUpperCase() + tabs[i].slice(1)).className = (tab === tabs[i]) ? 'active' : '';
-        }
-        document.getElementById('searchBox').style.display = (tab === 'sale' || tab === 'tasks') ? 'block' : 'none';
-        if (tab !== 'sale' && tab !== 'tasks') document.getElementById('searchBox').value = '';
-        render();
-    }
-
-    function closeModal() { document.getElementById('modal').classList.remove('active'); }
-    function openModal(html) {
-        document.getElementById('modalContent').innerHTML = html;
-        document.getElementById('modal').classList.add('active');
-    }
-    function goBack() { currentPlayer = null; render(); }
-    function goBackFolder() { currentFolder = null; render(); }
-    function goBackTournament() { currentTournament = null; render(); }
-
-    // ──────────────────────────────────────
-    // РЕНДЕР
-    // ──────────────────────────────────────
-    function render() {
-        var data = getData();
-        var app = document.getElementById('app');
-        var html = '';
-        if (currentTab === 'players') html = renderPlayers(data);
-        else if (currentTab === 'sale') html = renderSale(data);
-        else if (currentTab === 'orders') html = renderOrders(data);
-        else if (currentTab === 'tasks') html = renderTasks(data);
-        else if (currentTab === 'tournaments') html = renderTournaments(data);
-
-        // Инфа о бэкапе
-        var lastBackup = data.lastBackup ? new Date(data.lastBackup).toLocaleString('ru-RU') : 'ещё не было';
-        html += '<div class="backup-info">💾 Автобэкап раз в неделю | Последний: ' + lastBackup + ' | <span style="color:var(--gold);cursor:pointer;" onclick="manualBackup()">Сделать сейчас</span></div>';
-
-        app.innerHTML = html;
-    }
-
-    function manualBackup() {
-        var data = getData();
-        performBackup(data);
-        data.lastBackup = new Date().toISOString();
-        saveData(data);
-        render();
-        alert('Бэкап сохранён!');
-    }
-
-    // ──────────────────────────────────────
-    // ВКЛАДКА: ИГРОКИ
-    // ──────────────────────────────────────
-    function renderPlayers(data) {
-        var html = '';
-        if (currentPlayer && data.players[currentPlayer]) {
-            var p = data.players[currentPlayer];
-            html += '<div class="back-link" onclick="goBack()">← Назад</div>';
-            html += '<div class="list-item"><div><h3>' + currentPlayer + '</h3></div><span>' + (p.balance || 0) + ' ₽</span></div>';
-            html += '<button class="btn" onclick="showAddFunds()">💰 Пополнить</button>';
-            html += '<button class="btn btn-gold" onclick="showSpend()">🛒 Покупка из альбома</button>';
-            html += '<button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button>';
-            html += '<button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button>';
-            html += '<h3 style="margin-top:20px;color:var(--dim);">📋 История</h3>';
-            if (!p.history || p.history.length === 0) html += '<div class="empty">Нет операций</div>';
-            else {
-                var hist = p.history.slice().reverse();
-                for (var i = 0; i < hist.length; i++) {
-                    var h = hist[i];
-                    var sign = '+'; var cls = 'text-success';
-                    if (h.type === 'spend') { sign = '−'; cls = 'text-danger'; }
-                    if (h.type === 'order') { sign = '🔒'; cls = 'text-accent'; }
-                    html += '<div class="history-item"><span class="' + cls + '"><b>' + sign + (h.amount || 0) + ' ₽</b></span> — ' + (h.card || '') + '<br><small>' + (h.date || '') + '</small></div>';
-                }
-            }
+        // Кнопка запуска — показываем если игроков >= минимального
+        var minPlayers = 4;
+        if(parts.length >= minPlayers){
+            // Показываем выбор формата
+            h+='<div class="format-select"><button id="fmt2" class="active" onclick="selectFormat(2)">👤 1 на 1</button><button id="fmt4" onclick="selectFormat(4)">👥 За столом (4)</button></div>';
+            h+='<p style="color:var(--dim);font-size:12px;text-align:center;" id="formatInfo">Игроки играют парами (1 на 1)</p>';
+            h+='<button class="btn btn-tournament" style="background:var(--gold);color:#000;font-size:18px;" onclick="startSwiss(\''+trn.id+'\')">🚀 ЗАПУСТИТЬ ТУРНИР</button>';
         } else {
-            currentPlayer = null;
-            html += '<button class="btn btn-primary" onclick="showAddPlayer()">+ Добавить игрока</button>';
-            var names = Object.keys(data.players).sort();
-            if (names.length === 0) html += '<div class="empty">Пока никого нет</div>';
-            else for (var i = 0; i < names.length; i++) html += '<div class="list-item" onclick="openPlayer(\'' + names[i] + '\')"><div><h3>' + names[i] + '</h3></div><span>' + (data.players[names[i]].balance || 0) + ' ₽</span></div>';
+            h+='<p style="color:var(--dim);text-align:center;">Минимум '+minPlayers+' игроков для запуска</p>';
         }
-        return html;
-    }
-    function openPlayer(name) { currentPlayer = name; render(); }
 
-    // ──────────────────────────────────────
-    // ВКЛАДКА: НА ПРОДАЖУ
-    // ──────────────────────────────────────
-    function renderSale(data) {
-        var html = '';
-        var search = (document.getElementById('searchBox').value || '').toLowerCase();
-        var cards = data.saleCards || [];
-        var filtered = [];
-        for (var i = 0; i < cards.length; i++) {
-            var c = cards[i];
-            if (search === '' || (c.name||'').toLowerCase().indexOf(search) !== -1 || (c.oracle||'').toLowerCase().indexOf(search) !== -1) filtered.push(c);
+        if(!parts.length)h+='<div class="empty">Нет участников.</div>';
+        else for(var i=0;i<parts.length;i++){
+            var p=parts[i];
+            h+='<div class="participant-row"><div class="info"><h4>👤 '+(p.name||'???')+'</h4>';
+            h+='<div class="deck">🔗 '+(p.deckLink?'<a href="'+p.deckLink+'" target="_blank">'+p.deckLink+'</a>':'<span style="color:var(--dim);">—</span>')+'</div>';
+            if(p.commander||p.partner||p.companion){h+='<div class="commanders">';if(p.commander)h+='🎖 '+p.commander+' ';if(p.partner)h+='🤝 '+p.partner+' ';if(p.companion)h+='🐾 '+p.companion;h+='</div>';}
+            h+='</div><div style="display:flex;align-items:center;gap:8px;"><div class="paid-badge '+(p.paid?'paid':'unpaid')+'" onclick="togglePaid(\''+p.id+'\')">'+(p.paid?'✅ Оплатил':'❌ Не оплатил')+'</div><button class="btn btn-small" style="background:var(--danger);" onclick="deleteParticipant(\''+p.id+'\')">🗑</button></div></div>';
         }
-        html += '<div class="stats">💵 Карт: <b>' + cards.length + '</b> | Показано: <b>' + filtered.length + '</b></div>';
-        html += '<button class="btn btn-sell-btn" onclick="showAddSaleCard()">+ Добавить карту</button>';
-        if (cards.length > 0) html += '<button class="btn btn-danger" style="margin-top:4px;" onclick="clearSale()">🗑 Очистить</button>';
-        if (filtered.length === 0) html += '<div class="empty">' + (cards.length === 0 ? 'Пусто.' : 'Ничего не найдено.') + '</div>';
-        else for (var i = 0; i < filtered.length; i++) {
-            var c = filtered[i];
-            html += '<div class="sale-item"><h3>🃏 ' + (c.name||'???') + '</h3>';
-            if (c.set||c.collector) { html += '<div class="meta">'; if (c.set) html += '<span>📗 '+c.set.toUpperCase()+'</span>'; if (c.collector) html += '<span>#'+c.collector+'</span>'; if (c.foil) html += '<span style="color:var(--gold);">✨ FOIL</span>'; html += '</div>'; }
-            if (c.oracle) html += '<div class="oracle">'+c.oracle+'</div>';
-            html += '<div class="price">'+(c.price ? c.price+' ₽' : '<span class="no-price">Цена не задана</span>')+'</div>';
-            html += '<div class="sale-actions"><button class="btn btn-small btn-sell-btn" onclick="sellToPlayer(\''+c.id+'\')">💵</button><button class="btn btn-small btn-price-btn" onclick="setSalePrice(\''+c.id+'\')">💰</button><button class="btn btn-small" style="background:var(--info);" onclick="editSaleCard(\''+c.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteSaleCard(\''+c.id+'\')">🗑</button></div></div>';
+        h+='<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editTournament(\''+trn.id+'\')">✏️</button><button class="btn btn-danger" onclick="deleteTournament(\''+trn.id+'\')">🗑</button></div>';
+        return h;
+    }
+    h+='<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новый турнир</button>';
+    if(!trns.length)h+='<div class="empty">Нет турниров.</div>';
+    else for(var i=0;i<trns.length;i++){var t=trns[i];var pc=(t.participants||[]).length;var pp=(t.participants||[]).filter(function(p){return p.paid;}).length;h+='<div class="folder-item tournament" onclick="openTournament(\''+t.id+'\')"><div><h3>🏟 '+(t.name||'Без имени')+'</h3><div class="folder-stats">'+pc+' игроков, '+pp+' оплатили'+(t.swiss&&t.swiss.started?' | 🔄 Идёт':'')+'</div></div><span>→</span></div>';}
+    return h;
+}
+
+var selectedTableSize = 2;
+
+function selectFormat(size) {
+    selectedTableSize = size;
+    document.getElementById('fmt2').className = (size === 2) ? 'active' : '';
+    document.getElementById('fmt4').className = (size === 4) ? 'active' : '';
+    document.getElementById('formatInfo').textContent = (size === 2) ? 'Игроки играют парами (1 на 1)' : 'Игроки играют за столами по 4 человека (под)';
+}
+
+function openTournament(id){currentTournament=id;render();}
+
+// SWISS LOGIC — 2 or 4 players per table
+function startSwiss(id) {
+    var d=getData(),trn=null;for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){trn=d.tournaments[i];break;}}
+    if(!trn)return;
+    var players=trn.participants.filter(function(p){return p.paid;});
+    var tableSize = selectedTableSize;
+    var minPlayers = tableSize;
+    if(players.length < minPlayers) return alert('Минимум '+minPlayers+' оплаченных игроков для формата '+tableSize+' человека за столом!');
+
+    var swissPlayers=[];
+    for(var i=0;i<players.length;i++){
+        swissPlayers.push({id:players[i].id,name:players[i].name,points:0,opponents:[],history:[]});
+    }
+    trn.swiss={started:true,currentRound:1,totalRounds:4,players:swissPlayers,rounds:[],final:null,tableSize:tableSize};
+    generatePairings(trn);
+    saveData(d);render();
+}
+
+function generatePairings(trn) {
+    var sw=trn.swiss;
+    var round=sw.currentRound;
+    var tableSize = sw.tableSize || 2;
+
+    var pls=sw.players.slice();
+    pls.sort(function(a,b){return b.points-a.points;});
+
+    // Группируем по очкам и шафлим внутри групп
+    var groups=[],curGroup=[],curPts=null;
+    for(var i=0;i<pls.length;i++){
+        if(pls[i].points!==curPts){
+            if(curGroup.length){groups.push(shuffle(curGroup));curGroup=[];}
+            curPts=pls[i].points;
         }
-        return html;
+        curGroup.push(pls[i]);
+    }
+    if(curGroup.length)groups.push(shuffle(curGroup));
+    var flat=[];
+    for(var i=0;i<groups.length;i++){for(var j=0;j<groups[i].length;j++)flat.push(groups[i][j]);}
+
+    var tables=[];
+    var remaining = flat.slice();
+
+    // Добавляем bye если не хватает для полного стола
+    while(remaining.length % tableSize !== 0){
+        var byePlayer = remaining.pop();
+        if(!byePlayer) break;
+        tables.push({players:[byePlayer], bye:true});
     }
 
-    // ──────────────────────────────────────
-    // ВКЛАДКА: ЗАКАЗЫ
-    // ──────────────────────────────────────
-    function renderOrders(data) {
-        var html = '', pending = [], done = [];
-        for (var i = 0; i < data.orders.length; i++) { if (data.orders[i].status === 'pending') pending.push(data.orders[i]); else done.push(data.orders[i]); }
-        html += '<button class="btn btn-primary" onclick="showAddOrder()">+ Новый заказ</button>';
-        if (pending.length === 0 && done.length === 0) html += '<div class="empty">📭 Заказов нет</div>';
-        if (pending.length > 0) {
-            html += '<h3 style="color:var(--accent);margin:16px 0 8px;">⏳ Ожидают ('+pending.length+')</h3>';
-            for (var i = 0; i < pending.length; i++) {
-                var o = pending[i];
-                html += '<div class="list-item" style="border-left-color:var(--accent);"><div><b>'+o.playerName+'</b><br>'+o.card+'<br><small>'+o.date+'</small></div><div style="text-align:right;"><span>'+o.amount+' ₽</span><br><button class="btn btn-small" style="background:var(--success);" onclick="completeOrder(\''+o.id+'\')">✅</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteOrder(\''+o.id+'\')">🗑</button></div></div>';
+    // Формируем столы
+    for(var i=0;i<remaining.length;i+=tableSize){
+        var tablePlayers = [];
+        for(var j=0;j<tableSize&&(i+j)<remaining.length;j++){
+            tablePlayers.push(remaining[i+j]);
+        }
+        tables.push({players:tablePlayers, bye:false});
+    }
+
+    // Записываем opponents
+    for(var t=0;t<tables.length;t++){
+        if(tables[t].bye) continue;
+        var tps = tables[t].players;
+        for(var a=0;a<tps.length;a++){
+            for(var b=0;b<tps.length;b++){
+                if(a!==b && tps[a].opponents.indexOf(tps[b].id)===-1) tps[a].opponents.push(tps[b].id);
             }
         }
-        if (done.length > 0) {
-            html += '<h3 style="color:var(--dim);margin-top:16px;">✅ Выполненные</h3>';
-            for (var i = done.length-1; i >= Math.max(0, done.length-5); i--) html += '<div class="list-item" style="opacity:0.6;"><div><b>'+done[i].playerName+'</b><br>'+done[i].card+'</div><div>'+done[i].amount+' ₽</div></div>';
-        }
-        return html;
     }
 
-    // ──────────────────────────────────────
-    // ВКЛАДКА: ЗАДАЧИ
-    // ──────────────────────────────────────
-    function renderTasks(data) {
-        var html = '', folders = data.taskFolders || [];
-        if (currentFolder) {
-            var folder = null;
-            for (var i = 0; i < folders.length; i++) { if (folders[i].id === currentFolder) { folder = folders[i]; break; } }
-            if (!folder) { currentFolder = null; return renderTasks(data); }
-            var tasks = folder.tasks || [];
-            var search = (document.getElementById('searchBox').value || '').toLowerCase();
-            var filtered = [];
-            for (var i = 0; i < tasks.length; i++) { if (search === '' || (tasks[i].title||'').toLowerCase().indexOf(search) !== -1 || (tasks[i].desc||'').toLowerCase().indexOf(search) !== -1) filtered.push(tasks[i]); }
-            html += '<div class="breadcrumb"><span onclick="goBackFolder()">📁 Все папки</span> → 📂 ' + folder.name + '</div>';
-            html += '<button class="btn btn-info" onclick="showAddTask()">+ Новая задача</button>';
-            html += '<div class="stats">📋 Задач: <b>'+tasks.length+'</b> | ✅ <b>'+tasks.filter(function(t){return t.done;}).length+'</b></div>';
-            if (filtered.length === 0) html += '<div class="empty">'+(tasks.length===0?'Папка пуста.':'Ничего не найдено.')+'</div>';
-            else {
-                filtered.sort(function(a,b){return (a.done?1:0)-(b.done?1:0);});
-                for (var i = 0; i < filtered.length; i++) {
-                    var t = filtered[i];
-                    html += '<div class="task-item'+(t.done?' task-done':'')+'"><div style="display:flex;justify-content:space-between;"><h3>'+(t.done?'✅ ':'⬜ ')+(t.title||'')+'</h3>'+(t.price?'<span style="color:var(--gold);">'+t.price+' ₽</span>':'')+'</div>';
-                    if (t.desc) html += '<div class="task-meta">'+t.desc+'</div>';
-                    if (t.link) html += '<div class="task-link">🔗 <a href="'+t.link+'" target="_blank">'+t.link+'</a></div>';
-                    html += '<div class="btn-row" style="margin-top:8px;"><button class="btn btn-small btn-sell-btn" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'↩':'✅')+'</button><button class="btn btn-small btn-price-btn" onclick="editTask(\''+t.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteTask(\''+t.id+'\')">🗑</button></div></div>';
-                }
+    sw.rounds.push({round:round,tables:tables});
+}
+
+function renderSwiss(d,trn) {
+    var sw=trn.swiss;
+    var tableSize = sw.tableSize || 2;
+    var h='<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все турниры</span> → 🏟 '+trn.name+'</div>';
+    h+='<h2 style="color:var(--gold);text-align:center;">🔄 ШВЕЙЦАРСКАЯ ('+tableSize+' игрока за столом)</h2>';
+    h+='<div class="stats" style="text-align:center;">Тур '+(sw.currentRound)+' из '+(sw.totalRounds)+'</div>';
+
+    var curRound=sw.rounds[sw.rounds.length-1];
+    if(curRound && !sw.final){
+        h+='<div class="swiss-round"><h3>🤼 ТУР '+curRound.round+' — СТОЛЫ</h3>';
+        for(var t=0;t<curRound.tables.length;t++){
+            var table = curRound.tables[t];
+            if(table.bye){
+                h+='<div class="table-group"><h4>👤 BYE (пропуск)</h4>';
+                h+='<div class="pairing-row"><div class="player">'+getPlayerName(sw,table.players[0].id)+'</div><div class="vs">BYE (+3 очка)</div></div></div>';
+                continue;
             }
-            html += '<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editFolder(\''+folder.id+'\')">✏️ Переименовать</button><button class="btn btn-danger" onclick="deleteFolder(\''+folder.id+'\')">🗑 Удалить папку</button></div>';
-            return html;
-        }
-        html += '<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button>';
-        if (folders.length === 0) html += '<div class="empty">Нет папок.</div>';
-        else for (var i = 0; i < folders.length; i++) {
-            var f = folders[i];
-            html += '<div class="folder-item" onclick="openFolder(\''+f.id+'\')"><div><h3>📂 '+ (f.name||'Без имени') +'</h3><div class="folder-stats">'+(f.tasks||[]).length+' задач, '+f.tasks.filter(function(t){return t.done;}).length+' выполнено</div></div><span style="color:var(--dim);">→</span></div>';
-        }
-        return html;
-    }
-    function openFolder(id) { currentFolder = id; render(); }
-
-    // ──────────────────────────────────────
-    // ВКЛАДКА: ТУРНИРЫ
-    // ──────────────────────────────────────
-    function renderTournaments(data) {
-        var html = '';
-        var tournaments = data.tournaments || [];
-
-        if (currentTournament) {
-            var trn = null;
-            for (var i = 0; i < tournaments.length; i++) { if (tournaments[i].id === currentTournament) { trn = tournaments[i]; break; } }
-            if (!trn) { currentTournament = null; return renderTournaments(data); }
-
-            var participants = trn.participants || [];
-            var paidCount = participants.filter(function(p){return p.paid;}).length;
-            var prizeFund = 0;
-            for (var i = 0; i < participants.length; i++) { if (participants[i].paid) prizeFund += (parseInt(participants[i].entryFee) || 500); }
-
-            html += '<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все турниры</span> → 🏟 ' + trn.name + '</div>';
-
-            // Призовой фонд
-            html += '<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">' + prizeFund.toLocaleString() + ' ₽</div><div style="font-size:12px;color:var(--dim);">Оплатили: ' + paidCount + ' чел.</div></div>';
-
-            html += '<div class="stats">👥 Участников: <b>' + participants.length + '</b> | 💰 Оплатили: <b>' + paidCount + '</b></div>';
-
-            html += '<div style="display:flex;gap:8px;margin-bottom:12px;">';
-            html += '<button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Добавить игрока</button>';
-            html += '<button class="btn btn-export" style="flex:1;" onclick="exportTournament(\'' + trn.id + '\')">📥 Excel</button>';
-            html += '</div>';
-
-            if (participants.length === 0) {
-                html += '<div class="empty">Нет участников.</div>';
+            h+='<div class="table-group"><h4>🪑 СТОЛ '+(t+1)+'</h4>';
+            // Для 2 игроков — обычные пары
+            if(tableSize === 2){
+                var p1=table.players[0], p2=table.players[1];
+                h+='<div class="pairing-row">';
+                h+='<div class="player">'+p1.name+'</div>';
+                h+='<input type="text" placeholder="Счёт" value="'+(table.score1||'')+'" onchange="updateTableScore(\''+trn.id+'\','+curRound.round+','+t+',1,this.value)">';
+                h+='<div class="vs">VS</div>';
+                h+='<input type="text" placeholder="Счёт" value="'+(table.score2||'')+'" onchange="updateTableScore(\''+trn.id+'\','+curRound.round+','+t+',2,this.value)">';
+                h+='<div class="player">'+p2.name+'</div>';
+                h+='</div>';
+                h+='<div style="display:flex;gap:4px;justify-content:center;margin-top:4px;">';
+                h+='<button class="winner-btn'+(table.winner===p1.id?' selected':'')+'" onclick="setTableWinner(\''+trn.id+'\','+curRound.round+','+t+',\''+p1.id+'\')">👑 '+p1.name+'</button>';
+                h+='<button class="winner-btn'+(table.winner===p2.id?' selected':'')+'" onclick="setTableWinner(\''+trn.id+'\','+curRound.round+','+t+',\''+p2.id+'\')">👑 '+p2.name+'</button>';
+                h+='<button class="winner-btn" onclick="setTableWinner(\''+trn.id+'\','+curRound.round+','+t+',\'draw\')">🤝 Ничья</button>';
+                h+='</div>';
             } else {
-                for (var i = 0; i < participants.length; i++) {
-                    var p = participants[i];
-                    html += '<div class="participant-row">';
-                    html += '<div class="info"><h4>👤 ' + (p.name || '???') + '</h4>';
-                    html += '<div class="deck">🃏 Колода: ' + (p.deck || '—') + '</div>';
-                    if (p.commander || p.partner || p.companion) {
-                        html += '<div class="commanders">';
-                        if (p.commander) html += '🎖 Командир: ' + p.commander + ' ';
-                        if (p.partner) html += '🤝 Партнёр: ' + p.partner + ' ';
-                        if (p.companion) html += '🐾 Компаньон: ' + p.companion;
-                        html += '</div>';
-                    }
-                    html += '</div>';
-                    html += '<div style="display:flex;align-items:center;gap:8px;">';
-                    html += '<div class="paid-badge ' + (p.paid ? 'paid' : 'unpaid') + '" onclick="togglePaid(\'' + p.id + '\')">' + (p.paid ? '✅ Оплатил' : '❌ Не оплатил') + '</div>';
-                    html += '<button class="btn btn-small" style="background:var(--danger);" onclick="deleteParticipant(\'' + p.id + '\')">🗑</button>';
-                    html += '</div>';
-                    html += '</div>';
+                // Для 4 игроков — под
+                h+='<p style="text-align:center;color:var(--dim);font-size:12px;">Выбери победителя за столом:</p>';
+                h+='<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;">';
+                for(var p=0;p<table.players.length;p++){
+                    h+='<button class="winner-btn'+(table.winner===table.players[p].id?' selected':'')+'" onclick="setTableWinner(\''+trn.id+'\','+curRound.round+','+t+',\''+table.players[p].id+'\')">👑 '+table.players[p].name+'</button>';
+                }
+                h+='<button class="winner-btn" onclick="setTableWinner(\''+trn.id+'\','+curRound.round+','+t+',\'draw\')">🤝 Ничья</button>';
+                h+='</div>';
+                h+='<div style="display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap;">';
+                for(var p=0;p<table.players.length;p++){
+                    h+='<div class="player" style="font-size:11px;">'+table.players[p].name+'</div>';
+                }
+                h+='</div>';
+            }
+            h+='</div>';
+        }
+        h+='<button class="btn btn-tournament" onclick="finishRound(\''+trn.id+'\')">✅ Завершить тур</button></div>';
+    }
+
+    // ФИНАЛ
+    if(sw.final){
+        h+='<div class="final-bracket"><h2>🏆 ФИНАЛ</h2>';
+        if(tableSize===2){
+            h+='<div class="finalists">👑 '+getPlayerName(sw,sw.final.p1)+'</div><div style="color:var(--danger);font-size:24px;">VS</div><div class="finalists">👑 '+getPlayerName(sw,sw.final.p2)+'</div>';
+        } else {
+            h+='<div class="finalists">Финальный стол (топ-'+tableSize+'):</div>';
+            for(var i=0;i<sw.final.players.length;i++){
+                h+='<div class="finalists">👑 '+getPlayerName(sw,sw.final.players[i])+'</div>';
+            }
+        }
+        if(sw.final.winner){
+            h+='<div class="champion">🏆 ПОБЕДИТЕЛЬ: '+getPlayerName(sw,sw.final.winner)+' 🏆</div>';
+        } else {
+            h+='<div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:8px;">';
+            if(tableSize===2){
+                h+='<button class="btn btn-tournament" style="background:var(--gold);color:#000;" onclick="setFinalWinner(\''+trn.id+'\',\''+sw.final.p1+'\')">👑 '+getPlayerName(sw,sw.final.p1)+'</button>';
+                h+='<button class="btn btn-tournament" style="background:var(--gold);color:#000;" onclick="setFinalWinner(\''+trn.id+'\',\''+sw.final.p2+'\')">👑 '+getPlayerName(sw,sw.final.p2)+'</button>';
+            } else {
+                for(var i=0;i<sw.final.players.length;i++){
+                    h+='<button class="btn btn-tournament" style="background:var(--gold);color:#000;" onclick="setFinalWinner(\''+trn.id+'\',\''+sw.final.players[i]+'\')">👑 '+getPlayerName(sw,sw.final.players[i])+'</button>';
                 }
             }
-
-            html += '<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;">';
-            html += '<button class="btn btn-warning" onclick="editTournament(\'' + trn.id + '\')">✏️ Переименовать</button>';
-            html += '<button class="btn btn-danger" onclick="deleteTournament(\'' + trn.id + '\')">🗑 Удалить турнир</button>';
-            html += '</div>';
-            return html;
+            h+='</div>';
         }
+        h+='</div>';
+    }
 
-        html += '<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новый турнир</button>';
-        if (tournaments.length === 0) html += '<div class="empty">Нет турниров.</div>';
-        else for (var i = 0; i < tournaments.length; i++) {
-            var t = tournaments[i];
-            var pCount = (t.participants || []).length;
-            var pPaid = (t.participants || []).filter(function(p){return p.paid;}).length;
-            html += '<div class="folder-item tournament" onclick="openTournament(\'' + t.id + '\')"><div><h3>🏟 ' + (t.name || 'Без имени') + '</h3><div class="folder-stats">' + pCount + ' игроков, ' + pPaid + ' оплатили</div></div><span style="color:var(--dim);">→</span></div>';
+    // Турнирная таблица
+    h+='<h3 style="margin-top:20px;color:var(--dim);">📊 ТУРНИРНАЯ ТАБЛИЦА</h3>';
+    var pls=sw.players.slice().sort(function(a,b){return b.points-a.points;});
+    h+='<table class="standings-table"><tr><th>#</th><th>Игрок</th><th>Очки</th></tr>';
+    for(var i=0;i<pls.length;i++){
+        h+='<tr'+(i<tableSize&&sw.currentRound>sw.totalRounds?' class="top4"':'')+'><td>'+(i+1)+'</td><td>'+pls[i].name+'</td><td>'+pls[i].points+'</td></tr>';
+    }
+    h+='</table>';
+
+    h+='<button class="btn btn-export" onclick="exportSwiss(\''+trn.id+'\')">📥 Excel (результаты)</button>';
+    return h;
+}
+
+function getPlayerName(sw,id){for(var i=0;i<sw.players.length;i++){if(sw.players[i].id===id)return sw.players[i].name;}return id;}
+function updateTableScore(tid,r,t,p,v){var d=getData(),trn=null;for(var j=0;j<d.tournaments.length;j++){if(d.tournaments[j].id===tid){trn=d.tournaments[j];break;}}if(!trn||!trn.swiss)return;var rd=trn.swiss.rounds[r-1];if(!rd||!rd.tables[t])return;if(p===1)rd.tables[t].score1=v;else rd.tables[t].score2=v;saveData(d);}
+function setTableWinner(tid,r,t,w){var d=getData(),trn=null;for(var j=0;j<d.tournaments.length;j++){if(d.tournaments[j].id===tid){trn=d.tournaments[j];break;}}if(!trn||!trn.swiss)return;var rd=trn.swiss.rounds[r-1];if(!rd||!rd.tables[t])return;rd.tables[t].winner=w;saveData(d);render();}
+function finishRound(tid){
+    var d=getData(),trn=null;for(var j=0;j<d.tournaments.length;j++){if(d.tournaments[j].id===tid){trn=d.tournaments[j];break;}}
+    if(!trn||!trn.swiss)return;
+    var sw=trn.swiss,cur=sw.rounds[sw.rounds.length-1];
+    var tableSize = sw.tableSize || 2;
+    for(var t=0;t<cur.tables.length;t++){
+        var table = cur.tables[t];
+        if(table.bye){addPoints(sw,table.players[0].id,3);continue;}
+        if(table.winner==='draw'){
+            for(var p=0;p<table.players.length;p++) addPoints(sw,table.players[p].id,1);
+        } else if(table.winner){
+            addPoints(sw,table.winner,3);
         }
-        return html;
     }
-
-    function openTournament(id) { currentTournament = id; render(); }
-
-    // ──────────────────────────────────────
-    // МОДАЛКИ: ИГРОКИ
-    // ──────────────────────────────────────
-    function showAddPlayer() { openModal('<h2>✨ Новый игрок</h2><input id="pName" placeholder="Имя"><input id="pBal" type="number" value="0"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addPlayer()">Создать</button></div>'); }
-    function addPlayer() {
-        var name = document.getElementById('pName').value.trim(); if (!name) return alert('Введи!');
-        var bal = parseInt(document.getElementById('pBal').value) || 0; var data = getData();
-        if (data.players[name]) return alert('Есть!');
-        data.players[name] = { balance: bal, history: bal > 0 ? [{ date: new Date().toLocaleString('ru-RU'), amount: bal, type: 'add', card: 'Старт' }] : [] };
-        saveData(data); closeModal(); render();
-    }
-    function showAddFunds() { openModal('<h2>💰 '+currentPlayer+'</h2><input id="amount" type="number" value="500"><input id="note" placeholder="Примечание"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addFunds()">Зачислить</button></div>'); }
-    function addFunds() {
-        var amount = parseInt(document.getElementById('amount').value) || 0; if (amount <= 0) return;
-        var data = getData(); data.players[currentPlayer].balance += amount;
-        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: amount, type: 'add', card: document.getElementById('note').value.trim()||'Пополнение' });
-        saveData(data); closeModal(); render();
-    }
-    function showSpend() { openModal('<h2>🛒 '+currentPlayer+'</h2><input id="spendCard" placeholder="Карта"><input id="spendAmount" type="number"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-gold" style="background:var(--gold);color:#000;" onclick="spendFunds()">Списать</button></div>'); }
-    function spendFunds() {
-        var amount = parseInt(document.getElementById('spendAmount').value) || 0; if (amount <= 0) return;
-        var data = getData(); if (data.players[currentPlayer].balance < amount) return alert('Недостаточно!');
-        data.players[currentPlayer].balance -= amount;
-        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: amount, type: 'spend', card: document.getElementById('spendCard').value.trim()||'Карта' });
-        saveData(data); closeModal(); render();
-    }
-    function showOrder() { openModal('<h2>📦 '+currentPlayer+'</h2><input id="orderCard" placeholder="Карта"><input id="orderBase" type="number" placeholder="Цена" oninput="updateOrderTotal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderComm" checked onchange="updateOrderTotal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-accent" style="background:var(--accent);" onclick="placeOrderFromPlayer()">Заказать</button></div>'); }
-    function updateOrderTotal() { document.getElementById('orderTotal').innerText = ((document.getElementById('orderComm').checked ? Math.round((parseInt(document.getElementById('orderBase').value)||0) * 1.2) : (parseInt(document.getElementById('orderBase').value)||0))) + ' ₽'; }
-    function placeOrderFromPlayer() {
-        var card = document.getElementById('orderCard').value.trim(); var base = parseInt(document.getElementById('orderBase').value)||0; var comm = document.getElementById('orderComm').checked; var total = comm ? Math.round(base*1.2) : base;
-        if (!card || total <= 0) return alert('Заполни!'); var data = getData();
-        if (data.players[currentPlayer].balance < total) return alert('Недостаточно!');
-        data.players[currentPlayer].balance -= total;
-        data.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: total, type: 'order', card: card+' (ЗАКАЗ)' });
-        data.orders.push({ id: genId(), playerName: currentPlayer, card: card, amount: total, status: 'pending', date: new Date().toLocaleString('ru-RU') });
-        saveData(data); closeModal(); render();
-    }
-    function deletePlayer() { if(!confirm('Удалить?')) return; var data = getData(); delete data.players[currentPlayer]; currentPlayer = null; saveData(data); render(); }
-
-    // ──────────────────────────────────────
-    // МОДАЛКИ: ПРОДАЖА
-    // ──────────────────────────────────────
-    var autocompleteTimer = null;
-    function showAddSaleCard() { openModal('<h2>💵 Карта</h2><div class="autocomplete-wrap"><input id="saleName" placeholder="Название" autocomplete="off" oninput="onNameInput()" onkeydown="onNameKeydown(event)"><div class="autocomplete-list" id="autocompleteList"></div></div><p id="oraclePreview" class="oracle-loading"></p><input id="saleSet" placeholder="Сет"><input id="saleCollector" placeholder="Номер"><select id="saleCondition"><option>Near Mint</option><option>Lightly Played</option><option>Moderately Played</option></select><div class="toggle-row"><span>Фойл</span><label class="switch"><input type="checkbox" id="saleFoil"><span class="slider"></span></label></div><input id="salePrice" type="number" placeholder="Цена"><input type="hidden" id="saleOracle"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="addSaleCard()">Добавить</button></div>'); }
-    function onNameInput() {
-        var val = document.getElementById('saleName').value.trim(); var list = document.getElementById('autocompleteList');
-        if (autocompleteTimer) clearTimeout(autocompleteTimer);
-        if (val.length < 2) { list.style.display = 'none'; return; }
-        autocompleteTimer = setTimeout(function() {
-            fetch('https://api.scryfall.com/cards/autocomplete?q='+encodeURIComponent(val)).then(function(r){return r.json();}).then(function(json){
-                list.innerHTML = ''; if (json.data && json.data.length > 0) { for (var i=0;i<Math.min(json.data.length,8);i++){var d=document.createElement('div');d.textContent=json.data[i];d.onclick=function(){document.getElementById('saleName').value=this.textContent;list.style.display='none';fetchOracle(this.textContent);};list.appendChild(d);} list.style.display='block'; } else list.style.display='none';
-            }).catch(function(){list.style.display='none';});
-        }, 300);
-    }
-    function onNameKeydown(e) { if(e.key==='Enter'){e.preventDefault();var f=document.getElementById('autocompleteList').querySelector('div');if(f)f.click();else fetchOracle(document.getElementById('saleName').value.trim());} }
-    function fetchOracle(name) { var o=document.getElementById('oraclePreview');if(!name)return;o.textContent='Загрузка...';fetch('https://api.scryfall.com/cards/named?exact='+encodeURIComponent(name)).then(function(r){return r.json();}).then(function(j){if(j.oracle_text){o.textContent='📜 '+j.oracle_text;document.getElementById('saleOracle').value=j.oracle_text;}else o.textContent='Не найдено';}).catch(function(){o.textContent='Ошибка';}); }
-    function addSaleCard() { var n=document.getElementById('saleName').value.trim();if(!n)return alert('Введи!');var data=getData();data.saleCards.push({id:genId(),name:n,set:document.getElementById('saleSet').value.trim(),collector:document.getElementById('saleCollector').value.trim(),condition:document.getElementById('saleCondition').value,foil:document.getElementById('saleFoil').checked,price:document.getElementById('salePrice').value.trim(),oracle:document.getElementById('saleOracle').value.trim()});saveData(data);closeModal();render();}
-    function editSaleCard(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;openModal('<h2>✏️</h2><input id="saleName" value="'+(c.name||'')+'"><input id="saleSet" value="'+(c.set||'')+'"><input id="saleCollector" value="'+(c.collector||'')+'"><select id="saleCondition"><option'+(c.condition==='Near Mint'?' selected':'')+'>Near Mint</option><option'+(c.condition==='Lightly Played'?' selected':'')+'>Lightly Played</option><option'+(c.condition==='Moderately Played'?' selected':'')+'>Moderately Played</option></select><div class="toggle-row"><span>Фойл</span><label class="switch"><input type="checkbox" id="saleFoil"'+(c.foil?' checked':'')+'><span class="slider"></span></label></div><input id="salePrice" type="number" value="'+(c.price||'')+'"><textarea id="saleOracle">'+(c.oracle||'')+'</textarea><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="saveSaleCard(\''+id+'\')">Сохранить</button></div>');}
-    function saveSaleCard(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].name=document.getElementById('saleName').value.trim();d.saleCards[i].set=document.getElementById('saleSet').value.trim();d.saleCards[i].collector=document.getElementById('saleCollector').value.trim();d.saleCards[i].condition=document.getElementById('saleCondition').value;d.saleCards[i].foil=document.getElementById('saleFoil').checked;d.saleCards[i].price=document.getElementById('salePrice').value.trim();d.saleCards[i].oracle=document.getElementById('saleOracle').value.trim();break;}}saveData(d);closeModal();render();}
-    function setSalePrice(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;openModal('<h2>💰</h2><p>'+c.name+'</p><input id="newPrice" type="number" value="'+(c.price||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-price-btn" onclick="saveSalePrice(\''+id+'\')">Сохранить</button></div>');}
-    function saveSalePrice(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].price=document.getElementById('newPrice').value.trim();break;}}saveData(d);closeModal();render();}
-    function sellToPlayer(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c||!c.price)return alert('Установи цену!');var n=Object.keys(d.players).sort();if(!n.length)return alert('Нет игроков!');var h='<h2>💵</h2><p>'+c.name+'</p><p style="font-size:18px;"><b>'+c.price+' ₽</b></p><select id="sellPlayer">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+' ('+(d.players[n[i]].balance||0)+' ₽)</option>';h+='</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="confirmSellToPlayer(\''+id+'\')">Продать</button></div>';openModal(h);}
-    function confirmSellToPlayer(id){var pl=document.getElementById('sellPlayer').value.split(' (')[0];var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;var pr=parseInt(c.price)||0;if(d.players[pl].balance<pr)return alert('Недостаточно!');d.players[pl].balance-=pr;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:pr,type:'spend',card:c.name});d.saleCards=d.saleCards.filter(function(x){return x.id!==id;});saveData(d);closeModal();alert('Продано!');render();}
-    function deleteSaleCard(id){if(!confirm('Удалить?'))return;var d=getData();d.saleCards=d.saleCards.filter(function(c){return c.id!==id;});saveData(d);render();}
-    function clearSale(){if(!confirm('Очистить всё?'))return;var d=getData();d.saleCards=[];saveData(d);render();}
-
-    // ──────────────────────────────────────
-    // МОДАЛКИ: ЗАКАЗЫ
-    // ──────────────────────────────────────
-    function showAddOrder() { var d=getData();var n=Object.keys(d.players).sort();var h='<h2>📦</h2><select id="orderPlayerGlobal">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+'</option>';h+='</select><input id="orderCardGlobal" placeholder="Карта"><input id="orderBaseGlobal" type="number" placeholder="Цена" oninput="updateOrderTotalGlobal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderCommGlobal" checked onchange="updateOrderTotalGlobal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotalGlobal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="placeOrderGlobal()">Заказать</button></div>';openModal(h); }
-    function updateOrderTotalGlobal() { document.getElementById('orderTotalGlobal').innerText = ((document.getElementById('orderCommGlobal').checked ? Math.round((parseInt(document.getElementById('orderBaseGlobal').value)||0) * 1.2) : (parseInt(document.getElementById('orderBaseGlobal').value)||0))) + ' ₽'; }
-    function placeOrderGlobal() { var pl=document.getElementById('orderPlayerGlobal').value;var c=document.getElementById('orderCardGlobal').value.trim();var b=parseInt(document.getElementById('orderBaseGlobal').value)||0;var comm=document.getElementById('orderCommGlobal').checked;var t=comm?Math.round(b*1.2):b;if(!c||t<=0)return alert('Заполни!');var d=getData();if(d.players[pl].balance<t)return alert('Недостаточно!');d.players[pl].balance-=t;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:t,type:'order',card:c+' (ЗАКАЗ)'});d.orders.push({id:genId(),playerName:pl,card:c,amount:t,status:'pending',date:new Date().toLocaleString('ru-RU')});saveData(d);closeModal();render(); }
-    function completeOrder(id){var d=getData();for(var i=0;i<d.orders.length;i++){if(d.orders[i].id===id){d.orders[i].status='done';break;}}saveData(d);render();}
-    function deleteOrder(id){if(!confirm('Удалить?'))return;var d=getData();d.orders=d.orders.filter(function(o){return o.id!==id;});saveData(d);render();}
-
-    // ──────────────────────────────────────
-    // МОДАЛКИ: ПАПКИ И ЗАДАЧИ
-    // ──────────────────────────────────────
-    function showAddFolder(){openModal('<h2>📁 Папка</h2><input id="folderName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="addFolder()">Создать</button></div>');}
-    function addFolder(){var n=document.getElementById('folderName').value.trim();if(!n)return alert('Введи!');var d=getData();d.taskFolders.push({id:genId(),name:n,tasks:[]});saveData(d);closeModal();render();}
-    function editFolder(id){var d=getData(),f=null;for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===id){f=d.taskFolders[i];break;}}if(!f)return;openModal('<h2>✏️</h2><input id="folderName" value="'+(f.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="saveFolder(\''+id+'\')">Сохранить</button></div>');}
-    function saveFolder(id){var n=document.getElementById('folderName').value.trim();if(!n)return;var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===id){d.taskFolders[i].name=n;break;}}saveData(d);closeModal();render();}
-    function deleteFolder(id){if(!confirm('Удалить?'))return;var d=getData();d.taskFolders=d.taskFolders.filter(function(f){return f.id!==id;});currentFolder=null;saveData(d);render();}
-    function showAddTask(){openModal('<h2>📋 Задача</h2><input id="taskTitle" placeholder="Название"><textarea id="taskDesc" placeholder="Описание"></textarea><input id="taskPrice" type="number" placeholder="Цена"><input id="taskLink" placeholder="Ссылка"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="addTask()">Создать</button></div>');}
-    function addTask(){var t=document.getElementById('taskTitle').value.trim();if(!t)return alert('Введи!');var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){d.taskFolders[i].tasks.push({id:genId(),title:t,desc:document.getElementById('taskDesc').value.trim(),price:document.getElementById('taskPrice').value.trim(),link:document.getElementById('taskLink').value.trim(),done:false,date:new Date().toLocaleString('ru-RU')});break;}}saveData(d);closeModal();render();}
-    function editTask(id){var d=getData(),t=null;for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){t=d.taskFolders[i].tasks[j];break;}}break;}}if(!t)return;openModal('<h2>✏️</h2><input id="taskTitle" value="'+(t.title||'')+'"><textarea id="taskDesc">'+(t.desc||'')+'</textarea><input id="taskPrice" type="number" value="'+(t.price||'')+'"><input id="taskLink" value="'+(t.link||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="saveTask(\''+id+'\')">Сохранить</button></div>');}
-    function saveTask(id){var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){d.taskFolders[i].tasks[j].title=document.getElementById('taskTitle').value.trim();d.taskFolders[i].tasks[j].desc=document.getElementById('taskDesc').value.trim();d.taskFolders[i].tasks[j].price=document.getElementById('taskPrice').value.trim();d.taskFolders[i].tasks[j].link=document.getElementById('taskLink').value.trim();break;}}break;}}saveData(d);closeModal();render();}
-    function toggleTask(id){var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){for(var j=0;j<d.taskFolders[i].tasks.length;j++){if(d.taskFolders[i].tasks[j].id===id){d.taskFolders[i].tasks[j].done=!d.taskFolders[i].tasks[j].done;break;}}break;}}saveData(d);render();}
-    function deleteTask(id){if(!confirm('Удалить?'))return;var d=getData();for(var i=0;i<d.taskFolders.length;i++){if(d.taskFolders[i].id===currentFolder){d.taskFolders[i].tasks=d.taskFolders[i].tasks.filter(function(t){return t.id!==id;});break;}}saveData(d);render();}
-
-    // ──────────────────────────────────────
-    // МОДАЛКИ: ТУРНИРЫ
-    // ──────────────────────────────────────
-    function showAddTournament() { openModal('<h2>🏟 Новый турнир</h2><input id="trnName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>'); }
-    function addTournament() { var n = document.getElementById('trnName').value.trim(); if (!n) return alert('Введи!'); var d = getData(); d.tournaments.push({ id: genId(), name: n, participants: [] }); saveData(d); closeModal(); render(); }
-    function editTournament(id) { var d = getData(), t = null; for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { t = d.tournaments[i]; break; } } if (!t) return; openModal('<h2>✏️</h2><input id="trnName" value="'+(t.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="saveTournament(\''+id+'\')">Сохранить</button></div>'); }
-    function saveTournament(id) { var n = document.getElementById('trnName').value.trim(); if (!n) return; var d = getData(); for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { d.tournaments[i].name = n; break; } } saveData(d); closeModal(); render(); }
-    function deleteTournament(id) { if (!confirm('Удалить?')) return; var d = getData(); d.tournaments = d.tournaments.filter(function(t) { return t.id !== id; }); currentTournament = null; saveData(d); render(); }
-
-    function showAddParticipant() {
-        openModal('<h2>👤 Игрок</h2><input id="partName" placeholder="Имя игрока"><input id="partDeck" placeholder="Название колоды"><input id="partCommander" placeholder="Командир"><input id="partPartner" placeholder="Партнёр"><input id="partCompanion" placeholder="Компаньон"><input id="partFee" type="number" placeholder="Взнос (₽)" value="500"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addParticipant()">Добавить</button></div>');
-    }
-    function addParticipant() {
-        var name = document.getElementById('partName').value.trim();
-        if (!name) return alert('Введи имя!');
-        var d = getData();
-        for (var i = 0; i < d.tournaments.length; i++) {
-            if (d.tournaments[i].id === currentTournament) {
-                d.tournaments[i].participants.push({
-                    id: genId(),
-                    name: name,
-                    deck: document.getElementById('partDeck').value.trim(),
-                    commander: document.getElementById('partCommander').value.trim(),
-                    partner: document.getElementById('partPartner').value.trim(),
-                    companion: document.getElementById('partCompanion').value.trim(),
-                    entryFee: document.getElementById('partFee').value.trim() || '500',
-                    paid: false
-                });
-                break;
-            }
+    sw.currentRound++;
+    if(sw.currentRound>sw.totalRounds){
+        var pls=sw.players.slice().sort(function(a,b){return b.points-a.points;});
+        if(tableSize===2){
+            sw.final={p1:pls[0].id,p2:pls[1].id,winner:'',players:[]};
+        } else {
+            var finalPlayers=[];
+            for(var i=0;i<Math.min(tableSize,pls.length);i++) finalPlayers.push(pls[i].id);
+            sw.final={p1:'',p2:'',winner:'',players:finalPlayers};
         }
-        saveData(d); closeModal(); render();
+    } else {
+        generatePairings(trn);
     }
+    saveData(d);render();
+}
+function addPoints(sw,id,pts){for(var i=0;i<sw.players.length;i++){if(sw.players[i].id===id){sw.players[i].points+=pts;break;}}}
+function setFinalWinner(tid,w){var d=getData(),trn=null;for(var j=0;j<d.tournaments.length;j++){if(d.tournaments[j].id===tid){trn=d.tournaments[j];break;}}if(!trn||!trn.swiss||!trn.swiss.final)return;trn.swiss.final.winner=w;saveData(d);render();}
+function exportSwiss(tid){
+    var d=getData(),trn=null;for(var j=0;j<d.tournaments.length;j++){if(d.tournaments[j].id===tid){trn=d.tournaments[j];break;}}if(!trn||!trn.swiss)return;
+    var sw=trn.swiss,pls=sw.players.slice().sort(function(a,b){return b.points-a.points;});
+    var csv='\uFEFFТурнир:,'+(trn.name||'')+'\nФормат: '+(sw.tableSize||2)+' игрока за столом, 4 тура + Финал\n\n';
+    csv+='Место,Игрок,Очки\n';
+    for(var i=0;i<pls.length;i++){csv+=(i+1)+','+pls[i].name+','+pls[i].points+'\n';}
+    if(sw.final&&sw.final.winner)csv+='\n🏆 ПОБЕДИТЕЛЬ:,'+getPlayerName(sw,sw.final.winner)+'\n';
+    downloadFile((trn.name||'tournament')+'_results.csv',csv);
+}
 
-    function togglePaid(id) {
-        var d = getData();
-        for (var i = 0; i < d.tournaments.length; i++) {
-            if (d.tournaments[i].id === currentTournament) {
-                for (var j = 0; j < d.tournaments[i].participants.length; j++) {
-                    if (d.tournaments[i].participants[j].id === id) {
-                        d.tournaments[i].participants[j].paid = !d.tournaments[i].participants[j].paid;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        saveData(d); render();
-    }
+// TOURNAMENT MODALS
+function showAddTournament(){openModal('<h2>🏟</h2><input id="trnName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>');}
+function addTournament(){var n=document.getElementById('trnName').value.trim();if(!n)return;var d=getData();d.tournaments.push({id:genId(),name:n,participants:[],swiss:null});saveData(d);closeModal();render();}
+function editTournament(id){var d=getData(),t=null;for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){t=d.tournaments[i];break;}}if(!t)return;openModal('<h2>✏️</h2><input id="trnName" value="'+(t.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="saveTournament(\''+id+'\')">Сохранить</button></div>');}
+function saveTournament(id){var n=document.getElementById('trnName').value.trim();if(!n)return;var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){d.tournaments[i].name=n;break;}}saveData(d);closeModal();render();}
+function deleteTournament(id){if(!confirm('Удалить?'))return;var d=getData();d.tournaments=d.tournaments.filter(function(t){return t.id!==id;});currentTournament=null;saveData(d);render();}
+function showAddParticipant(){openModal('<h2>👤 Игрок</h2><input id="partName" placeholder="Имя"><input id="partDeckLink" placeholder="Ссылка на колоду"><input id="partCommander" placeholder="Командир"><input id="partPartner" placeholder="Партнёр"><input id="partCompanion" placeholder="Компаньон"><input id="partFee" type="number" value="500"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addParticipant()">Добавить</button></div>');}
+function addParticipant(){var n=document.getElementById('partName').value.trim();if(!n)return;var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){d.tournaments[i].participants.push({id:genId(),name:n,deckLink:document.getElementById('partDeckLink').value.trim(),commander:document.getElementById('partCommander').value.trim(),partner:document.getElementById('partPartner').value.trim(),companion:document.getElementById('partCompanion').value.trim(),entryFee:document.getElementById('partFee').value.trim()||'500',paid:false});break;}}saveData(d);closeModal();render();}
+function togglePaid(id){var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){for(var j=0;j<d.tournaments[i].participants.length;j++){if(d.tournaments[i].participants[j].id===id){d.tournaments[i].participants[j].paid=!d.tournaments[i].participants[j].paid;break;}}break;}}saveData(d);render();}
+function deleteParticipant(id){if(!confirm('Удалить?'))return;var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){d.tournaments[i].participants=d.tournaments[i].participants.filter(function(p){return p.id!==id;});break;}}saveData(d);render();}
+function exportTournament(id){
+    var d=getData(),trn=null;for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){trn=d.tournaments[i];break;}}if(!trn)return;
+    var p=trn.participants||[],pc=p.filter(function(x){return x.paid;}).length,pf=0;
+    for(var i=0;i<p.length;i++){if(p[i].paid)pf+=(parseInt(p[i].entryFee)||500);}
+    var csv='\uFEFFТурнир:,'+(trn.name||'')+'\nДата:,'+new Date().toLocaleString('ru-RU')+'\nПризовой фонд:,'+pf+' ₽\nОплатили:,'+pc+' из '+p.length+'\n\n';
+    csv+='Игрок,Ссылка на колоду,Командир,Партнёр,Компаньон,Взнос,Статус\n';
+    for(var i=0;i<p.length;i++){csv+='"'+p[i].name+'","'+p[i].deckLink+'","'+p[i].commander+'","'+p[i].partner+'","'+p[i].companion+'","'+(p[i].entryFee||'500')+' ₽","'+(p[i].paid?'Оплатил':'Не оплатил')+'"\n';}
+    downloadFile((trn.name||'tournament')+'.csv',csv);
+}
 
-    function deleteParticipant(id) {
-        if (!confirm('Удалить?')) return;
-        var d = getData();
-        for (var i = 0; i < d.tournaments.length; i++) {
-            if (d.tournaments[i].id === currentTournament) {
-                d.tournaments[i].participants = d.tournaments[i].participants.filter(function(p) { return p.id !== id; });
-                break;
-            }
-        }
-        saveData(d); render();
-    }
-
-    // ──────────────────────────────────────
-    // ЭКСПОРТ ТУРНИРА В CSV (EXCEL)
-    // ──────────────────────────────────────
-    function exportTournament(id) {
-        var d = getData();
-        var trn = null;
-        for (var i = 0; i < d.tournaments.length; i++) { if (d.tournaments[i].id === id) { trn = d.tournaments[i]; break; } }
-        if (!trn) return;
-
-        var participants = trn.participants || [];
-        var paidCount = participants.filter(function(p){return p.paid;}).length;
-        var prizeFund = 0;
-        for (var i = 0; i < participants.length; i++) { if (participants[i].paid) prizeFund += (parseInt(participants[i].entryFee) || 500); }
-
-        var csv = '\uFEFF';
-        csv += 'Турнир:,' + (trn.name || '') + '\n';
-        csv += 'Дата экспорта:,' + new Date().toLocaleString('ru-RU') + '\n';
-        csv += 'Призовой фонд:,' + prizeFund + ' ₽\n';
-        csv += 'Оплатили:,' + paidCount + ' из ' + participants.length + '\n\n';
-
-        // Каждое поле в своей ячейке
-        csv += 'Игрок,Колода,Командир,Партнёр,Компаньон,Взнос,Статус оплаты\n';
-        for (var i = 0; i < participants.length; i++) {
-            var p = participants[i];
-            csv += '"' + (p.name || '') + '"';
-            csv += ',"' + (p.deck || '') + '"';
-            csv += ',"' + (p.commander || '') + '"';
-            csv += ',"' + (p.partner || '') + '"';
-            csv += ',"' + (p.companion || '') + '"';
-            csv += ',"' + (p.entryFee || '500') + ' ₽"';
-            csv += ',"' + (p.paid ? 'Оплатил' : 'Не оплатил') + '"\n';
-        }
-
-        downloadFile((trn.name || 'tournament') + '.csv', csv);
-    }
-
-    // ──────────────────────────────────────
-    // ЗАПУСК: проверка бэкапа при старте
-    // ──────────────────────────────────────
-    checkAutoBackup();
-    render();
+checkAutoBackup();render();
 </script>
 </body>
 </html>
