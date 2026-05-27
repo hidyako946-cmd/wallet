@@ -2,128 +2,123 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, target-densitydpi=device-dpi">
     <title>The Clown's Council</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg: #0a0a0a; --card-bg: #141414; --gold: #c9a44b; --gold-light: #e0c878;
-            --text: #e0d6c2; --dim: #7a7a7a; --accent: #7b5ea7; --danger: #8b3a3a;
+            --text: #e0d6c2; --dim: #8a8a8a; --accent: #7b5ea7; --danger: #8b3a3a;
             --success: #3a6b4a; --info: #3a6b8b; --warning: #8b7a3a; --tournament: #2a6b4a;
-            --challenge: #8b3a6b; --radius: 16px;
+            --challenge: #8b3a6b; --radius: 20px;
+            /* S25 ULTRA OPTIMIZED */
+            --font-xs: 12px; --font-sm: 14px; --font-md: 17px; --font-lg: 22px;
+            --font-xl: 28px; --font-huge: 34px;
+            --padding: 28px;
+            --btn-padding: 18px;
+            --input-padding: 16px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: var(--bg); color: var(--text);
-            font-family: 'Roboto', 'Segoe UI', sans-serif;
-            padding: 16px; padding-bottom: 120px; min-height: 100vh;
+            font-family: -apple-system, 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            padding: var(--padding); padding-bottom: 140px; min-height: 100vh;
             -webkit-tap-highlight-color: transparent; user-select: none;
+            font-size: var(--font-md);
         }
-        .header { text-align: center; margin: 20px 0 24px; }
-        .header h1 { font-size: 26px; color: var(--gold); letter-spacing: 1px; }
-        .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+        .header { text-align: center; margin: 28px 0 32px; }
+        .header h1 { font-size: var(--font-xl); color: var(--gold); letter-spacing: 2px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
         .tabs button {
-            flex: 1; min-width: 50px; padding: 12px 3px; background: var(--card-bg);
-            border: 1px solid #222; color: var(--dim); font-size: 10px; font-weight: bold;
-            border-radius: 12px; cursor: pointer;
+            flex: 1; min-width: 55px; padding: 14px 6px; background: var(--card-bg);
+            border: 1px solid #222; color: var(--dim); font-size: var(--font-xs); font-weight: 700;
+            border-radius: 14px; cursor: pointer; letter-spacing: 0.5px;
         }
-        .tabs button.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .tabs button.active { background: var(--accent); color: white; border-color: var(--accent); transform: scale(1.03); }
         .list-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-            border-left: 4px solid #444; cursor: pointer;
+            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
+            border-left: 5px solid #444; cursor: pointer;
         }
-        .list-item h3 { font-size: 17px; }
-        .list-item span { font-size: 20px; font-weight: bold; color: white; }
+        .list-item h3 { font-size: var(--font-lg); }
+        .list-item span { font-size: 24px; font-weight: 800; color: white; }
         .folder-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-            margin-bottom: 12px; border: 1px solid #333; cursor: pointer;
+            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 14px; border: 1px solid #333; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 4px solid var(--warning);
+            border-left: 5px solid var(--warning);
         }
         .folder-item.tournament { border-left-color: var(--tournament); }
         .folder-item.challenge { border-left-color: var(--challenge); }
-        .folder-item h3 { font-size: 16px; }
-        .folder-item .folder-stats { font-size: 13px; color: var(--dim); }
+        .folder-item h3 { font-size: 18px; }
+        .folder-item .folder-stats { font-size: var(--font-sm); color: var(--dim); margin-top: 4px; }
         .participant-row {
-            background: var(--card-bg); border-radius: 12px; padding: 14px;
-            margin-bottom: 8px; border: 1px solid #222;
+            background: var(--card-bg); border-radius: 14px; padding: 18px;
+            margin-bottom: 10px; border: 1px solid #222;
             display: flex; justify-content: space-between; align-items: flex-start;
-            flex-wrap: wrap; gap: 8px;
+            flex-wrap: wrap; gap: 10px;
         }
         .participant-row .info { flex: 1; min-width: 0; }
-        .participant-row .info h4 { font-size: 15px; margin-bottom: 2px; }
-        .participant-row .info .deck { font-size: 12px; color: var(--info); word-break: break-all; }
-        .participant-row .info .commanders { font-size: 11px; color: var(--accent); margin-top: 2px; }
-        .participant-row .actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; }
+        .participant-row .info h4 { font-size: var(--font-md); margin-bottom: 3px; }
+        .participant-row .info .deck { font-size: var(--font-xs); color: var(--info); word-break: break-all; }
+        .participant-row .info .commanders { font-size: 11px; color: var(--accent); margin-top: 3px; }
+        .participant-row .actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
         .paid-badge {
-            padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold;
-            cursor: pointer; border: 2px solid #333; min-width: 90px; text-align: center;
+            padding: 8px 18px; border-radius: 24px; font-size: var(--font-sm); font-weight: 700;
+            cursor: pointer; border: 2px solid #333; min-width: 100px; text-align: center;
             transition: all 0.2s;
         }
         .paid-badge.paid { background: var(--success); border-color: var(--success); color: white; }
         .paid-badge.unpaid { background: transparent; border-color: var(--danger); color: var(--danger); }
-
-        /* Challenge card */
         .challenge-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-            margin-bottom: 10px; border: 1px solid #333;
-            border-left: 4px solid var(--challenge);
+            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 12px; border: 1px solid #333;
+            border-left: 5px solid var(--challenge);
         }
         .challenge-item.done { opacity: 0.55; border-left-color: var(--success); }
-        .challenge-item h4 { font-size: 16px; color: var(--gold-light); margin-bottom: 6px; }
-        .challenge-item .ch-meta { font-size: 12px; color: var(--dim); margin-bottom: 4px; }
-        .challenge-item .ch-meta span { margin-right: 10px; }
-        .challenge-item .ch-conditions { font-size: 13px; color: #ccc; margin: 8px 0; padding: 10px; background: #0a0a0a; border-radius: 8px; line-height: 1.4; }
-        .challenge-item .ch-player { font-size: 13px; color: var(--info); font-weight: bold; }
-        .challenge-item .ch-time { font-size: 12px; color: var(--warning); }
-        .challenge-item .ch-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-        .challenge-item .ch-actions button { flex: 1; min-width: 70px; }
+        .challenge-item h4 { font-size: var(--font-md); color: var(--gold-light); margin-bottom: 8px; }
+        .challenge-item .ch-meta { font-size: var(--font-sm); color: var(--dim); margin-bottom: 6px; }
+        .challenge-item .ch-meta span { margin-right: 12px; }
+        .challenge-item .ch-conditions { font-size: var(--font-sm); color: #ccc; margin: 10px 0; padding: 12px; background: #0a0a0a; border-radius: 10px; line-height: 1.5; }
+        .challenge-item .ch-player { font-size: var(--font-sm); color: var(--info); font-weight: 700; }
+        .challenge-item .ch-time { font-size: var(--font-sm); color: var(--warning); }
+        .challenge-item .ch-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .done-badge {
-            display: inline-block; padding: 6px 14px; border-radius: 20px;
-            font-size: 13px; font-weight: bold; cursor: pointer; border: 2px solid #333;
-            min-width: 100px; text-align: center; transition: all 0.2s;
+            display: inline-block; padding: 8px 18px; border-radius: 24px;
+            font-size: var(--font-sm); font-weight: 700; cursor: pointer; border: 2px solid #333;
+            min-width: 110px; text-align: center; transition: all 0.2s;
         }
         .done-badge.completed { background: var(--success); border-color: var(--success); color: white; }
         .done-badge.pending { background: transparent; border-color: var(--challenge); color: var(--challenge); }
-
         .prize-fund {
             background: linear-gradient(135deg, #1a3a2a, #0a1a0a);
-            border: 2px solid var(--tournament); border-radius: var(--radius);
-            padding: 16px; margin: 16px 0; text-align: center;
+            border: 3px solid var(--tournament); border-radius: var(--radius);
+            padding: 22px; margin: 20px 0; text-align: center;
         }
-        .prize-fund h3 { font-size: 14px; color: var(--dim); margin-bottom: 4px; }
-        .prize-fund .amount { font-size: 28px; font-weight: bold; color: var(--gold); }
+        .prize-fund h3 { font-size: var(--font-md); color: var(--dim); margin-bottom: 6px; }
+        .prize-fund .amount { font-size: var(--font-huge); font-weight: 800; color: var(--gold); }
         .sale-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-            margin-bottom: 12px; border: 1px solid #222;
+            background: var(--card-bg); border-radius: var(--radius); padding: 18px;
+            margin-bottom: 14px; border: 1px solid #222;
         }
-        .sale-item h3 { font-size: 17px; color: var(--gold-light); margin-bottom: 4px; }
-        .sale-item .oracle { font-size: 12px; color: var(--dim); margin: 6px 0; padding: 8px; background: #0a0a0a; border-radius: 8px; font-style: italic; line-height: 1.4; }
-        .sale-item .price { font-size: 20px; font-weight: bold; color: white; }
-        .sale-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .sale-actions button { flex: 1; min-width: 60px; }
-        .autocomplete-wrap { position: relative; }
-        .autocomplete-list {
-            position: absolute; top: 100%; left: 0; right: 0; z-index: 10;
-            background: #1a1a1a; border: 1px solid #333; border-radius: 0 0 10px 10px;
-            max-height: 200px; overflow-y: auto; display: none;
-        }
-        .autocomplete-list div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #222; color: #ccc; }
-        .autocomplete-list div:hover { background: var(--accent); color: white; }
+        .sale-item h3 { font-size: var(--font-md); color: var(--gold-light); margin-bottom: 6px; }
+        .sale-item .oracle { font-size: var(--font-xs); color: var(--dim); margin: 8px 0; padding: 10px; background: #0a0a0a; border-radius: 10px; font-style: italic; line-height: 1.5; }
+        .sale-item .price { font-size: 24px; font-weight: 800; color: white; }
+        .sale-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
         .task-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 14px;
-            margin-bottom: 8px; border: 1px solid #222;
+            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
+            margin-bottom: 10px; border: 1px solid #222;
         }
-        .task-item h3 { font-size: 15px; color: var(--text); margin-bottom: 4px; }
-        .task-item .task-meta { font-size: 12px; color: var(--dim); margin-bottom: 6px; }
+        .task-item h3 { font-size: var(--font-md); color: var(--text); margin-bottom: 6px; }
+        .task-item .task-meta { font-size: var(--font-xs); color: var(--dim); margin-bottom: 8px; }
         .task-item .task-link { font-size: 11px; color: var(--info); word-break: break-all; }
         .task-done { opacity: 0.5; }
         .task-done h3 { text-decoration: line-through; }
         .btn {
             background: var(--card-bg); border: 1px solid #333; color: white;
-            padding: 14px; border-radius: 12px; font-size: 15px; font-weight: bold;
-            width: 100%; margin-top: 8px; cursor: pointer; text-align: center; display: block;
+            padding: var(--btn-padding); border-radius: 14px; font-size: var(--font-md); font-weight: 700;
+            width: 100%; margin-top: 10px; cursor: pointer; text-align: center; display: block;
+            letter-spacing: 0.5px;
         }
         .btn-primary { background: var(--accent); border: none; }
         .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
@@ -135,56 +130,63 @@
         .btn-challenge { background: var(--challenge); border: none; color: white; }
         .btn-sell-btn { background: var(--success); color: white; border: none; }
         .btn-price-btn { background: var(--accent); color: white; border: none; }
-        .btn-small { padding: 8px 12px; font-size: 12px; width: auto; display: inline-block; margin: 4px; }
+        .btn-small { padding: 10px 16px; font-size: var(--font-xs); width: auto; display: inline-block; margin: 4px; }
         .btn-export { background: #1a5c2a; border: 1px solid var(--success); color: var(--success); }
-        .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center;
         }
         .modal.active { display: flex; }
         .modal-box {
-            background: var(--card-bg); width: 90%; max-width: 420px; padding: 24px;
-            border-radius: 20px; border: 1px solid #333; max-height: 85vh; overflow-y: auto;
+            background: var(--card-bg); width: 92%; max-width: 480px; padding: 28px;
+            border-radius: 22px; border: 1px solid #333; max-height: 80vh; overflow-y: auto;
         }
-        .modal-box h2 { color: var(--gold); margin-bottom: 16px; font-size: 20px; }
+        .modal-box h2 { color: var(--gold); margin-bottom: 20px; font-size: 24px; }
         input, select, textarea {
-            width: 100%; padding: 14px; margin: 8px 0; background: #000;
-            border: 1px solid #333; color: white; border-radius: 10px; font-size: 15px; outline: none;
+            width: 100%; padding: var(--input-padding); margin: 10px 0; background: #000;
+            border: 1px solid #333; color: white; border-radius: 12px; font-size: var(--font-md); outline: none;
         }
-        textarea { resize: vertical; min-height: 80px; font-family: monospace; font-size: 11px; }
-        .row { display: flex; gap: 8px; margin-top: 16px; }
+        textarea { resize: vertical; min-height: 90px; font-family: monospace; font-size: var(--font-sm); }
+        .row { display: flex; gap: 10px; margin-top: 20px; }
         .row .btn { flex: 1; }
-        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin: 12px 0; }
-        .switch { position: relative; display: inline-block; width: 52px; height: 28px; }
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin: 14px 0; }
+        .switch { position: relative; display: inline-block; width: 56px; height: 30px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border-radius: 28px; cursor: pointer; }
-        .slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.2s; }
+        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border-radius: 30px; cursor: pointer; }
+        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.2s; }
         input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(24px); }
-        .back-link { color: var(--gold); margin-bottom: 12px; display: block; cursor: pointer; font-weight: bold; }
-        .history-item { padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .back-link { color: var(--gold); margin-bottom: 16px; display: block; cursor: pointer; font-weight: 700; font-size: var(--font-md); }
+        .history-item { padding: 12px 0; border-bottom: 1px solid #222; font-size: var(--font-sm); }
         .history-item small { color: #555; }
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
         .text-accent { color: var(--accent); }
-        .empty { text-align: center; margin-top: 40px; color: var(--dim); }
-        .stats { font-size: 13px; color: var(--dim); margin-bottom: 12px; }
-        .breadcrumb { font-size: 13px; color: var(--dim); margin-bottom: 12px; }
-        .breadcrumb span { color: var(--gold); cursor: pointer; }
-        .backup-info { font-size: 11px; color: #444; text-align: center; margin-top: 8px; }
+        .empty { text-align: center; margin-top: 50px; color: var(--dim); font-size: var(--font-md); }
+        .stats { font-size: var(--font-sm); color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb { font-size: var(--font-sm); color: var(--dim); margin-bottom: 16px; }
+        .breadcrumb span { color: var(--gold); cursor: pointer; font-weight: 700; }
+        .backup-info { font-size: 11px; color: #444; text-align: center; margin-top: 10px; padding-bottom: 20px; }
         .backup-info span { color: var(--gold); cursor: pointer; }
-        .backup-info .restore-link { color: var(--info); cursor: pointer; margin-left: 8px; }
+        .backup-info .restore-link { color: var(--info); cursor: pointer; margin-left: 10px; }
         .toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--success); color: white; padding: 12px 24px;
-            border-radius: 20px; font-weight: bold; z-index: 9999;
-            animation: fadeInOut 2s ease;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--success); color: white; padding: 14px 28px;
+            border-radius: 24px; font-weight: 700; z-index: 9999; font-size: var(--font-md);
+            animation: fadeInOut 3s ease;
         }
+        .toast.error { background: var(--danger); }
         @keyframes fadeInOut {
-            0% { opacity: 0; bottom: 0; } 20% { opacity: 1; bottom: 20px; }
-            80% { opacity: 1; bottom: 20px; } 100% { opacity: 0; bottom: 0; }
+            0% { opacity: 0; bottom: 0; } 15% { opacity: 1; bottom: 30px; }
+            85% { opacity: 1; bottom: 30px; } 100% { opacity: 0; bottom: 0; }
         }
+        .download-link-box {
+            background: #1a1a1a; border: 1px solid #333; border-radius: 14px;
+            padding: 20px; margin: 14px 0; text-align: center;
+        }
+        .download-link-box a { color: var(--info); word-break: break-all; font-size: var(--font-sm); }
+        .download-link-box button { margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -207,21 +209,38 @@
 
 <script>
 function ensureXLSX(cb) { if (typeof XLSX !== 'undefined') { cb(); return; } var s = document.createElement('script'); s.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js'; s.onload = cb; document.head.appendChild(s); }
-var STORE = 'clown_council_v11';
+var STORE = 'clown_council_s25';
 function getData() { var r = localStorage.getItem(STORE); if (!r) return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], challengeFolders: [], lastBackup: null }; try { return JSON.parse(r); } catch(e) { return { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], challengeFolders: [], lastBackup: null }; } }
 function saveData(d) { try { localStorage.setItem(STORE, JSON.stringify(d)); } catch(e) { alert('Память переполнена!'); } }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
-function saveFileToDevice(filename, blob, callback) {
-    if (navigator.canShare && navigator.canShare({ files: [new File([blob], filename)] })) {
-        navigator.share({ files: [new File([blob], filename, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })], title: 'Сохранить' }).then(function() { if (callback) callback(true); }).catch(function() { saveViaBlob(filename, blob, callback); });
-    } else { saveViaBlob(filename, blob, callback); }
+function saveXLSXToDevice(filename, wb) {
+    var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    var blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    var file = new File([blob], filename, { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'Сохранить ' + filename }).then(function() {
+            showToast('✅ Файл сохранён!', false);
+        }).catch(function() { openBlobInNewTab(blob, filename); });
+    } else { openBlobInNewTab(blob, filename); }
 }
-function saveViaBlob(filename, blob, callback) {
-    var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = filename; a.style.display = 'none';
-    document.body.appendChild(a); a.click(); setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); if (callback) callback(true); }, 300);
+function openBlobInNewTab(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var w = window.open(url, '_blank');
+    if (!w) { showDownloadLink(url, filename); }
+    else { showToast('📥 Файл открыт. Нажми «Сохранить».', false); setTimeout(function() { URL.revokeObjectURL(url); }, 5000); }
 }
-function showToast(msg) { var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 2200); }
+function showDownloadLink(url, filename) {
+    var h = '<h2>📥 Скачать файл</h2><p style="color:var(--dim);font-size:14px;">Файл готов:</p>';
+    h += '<div class="download-link-box"><a href="' + url + '" download="' + filename + '" target="_blank">📄 ' + filename + '</a>';
+    h += '<br><button class="btn btn-info" onclick="var a=document.createElement(\'a\');a.href=\'' + url + '\';a.download=\'' + filename + '\';a.click();">📥 Скачать</button></div>';
+    h += '<button class="btn" onclick="closeModal()">Закрыть</button>';
+    openModal(h);
+}
+function showToast(msg, isError) {
+    var t = document.createElement('div'); t.className = 'toast' + (isError ? ' error' : ''); t.textContent = msg;
+    document.body.appendChild(t); setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 3200);
+}
 
 function downloadBackupXLSX(filename, d, silent) {
     ensureXLSX(function() {
@@ -233,8 +252,11 @@ function downloadBackupXLSX(filename, d, silent) {
         for (var i = 0; i < d.tournaments.length; i++) { var trn = d.tournaments[i]; var trdata = [['Игрок', 'Ссылка на колоду', 'Командир', 'Партнёр', 'Компаньон', 'Взнос', 'Оплата']]; for (var j = 0; j < trn.participants.length; j++) { var p = trn.participants[j]; trdata.push([p.name||'', p.deckLink||'', p.commander||'', p.partner||'', p.companion||'', (p.entryFee||'500')+' ₽', p.paid?'Оплатил':'Не оплатил']); } sheets.push({name: 'Турнир - '+(trn.name||'Без имени'), data: trdata}); }
         for (var i = 0; i < d.challengeFolders.length; i++) { var cf = d.challengeFolders[i]; var chdata = [['Название', 'Условия', 'Время', 'Игрок', 'Выполнен']]; for (var j = 0; j < cf.challenges.length; j++) { var ch = cf.challenges[j]; chdata.push([ch.title||'', ch.conditions||'', ch.time||'', ch.player||'', ch.done?'Да':'Нет']); } sheets.push({name: 'Челенджи - '+(cf.name||'Без имени'), data: chdata}); }
         var wb = XLSX.utils.book_new(); for (var i = 0; i < sheets.length; i++) { var ws = XLSX.utils.aoa_to_sheet(sheets[i].data); XLSX.utils.book_append_sheet(wb, ws, sheets[i].name || ('Sheet'+(i+1))); }
-        var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); var blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        saveFileToDevice(filename, blob, function(success) { if (!silent) showToast(success ? '✅ Файл сохранён!' : '⚠️ Не удалось сохранить'); });
+        if (silent) {
+            var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' }); var blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var url = URL.createObjectURL(blob); var a = document.createElement('a'); a.href = url; a.download = filename; a.style.display = 'none';
+            document.body.appendChild(a); a.click(); setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 5000);
+        } else { saveXLSXToDevice(filename, wb); }
     });
 }
 function checkAutoBackup() { var d = getData(); var now = new Date(); var last = d.lastBackup ? new Date(d.lastBackup) : null; if (!last || (now - last) >= 7*24*60*60*1000) { downloadBackupXLSX('clown_council_backup_' + new Date().toISOString().slice(0,10) + '.xlsx', d, true); d.lastBackup = now.toISOString(); saveData(d); } }
@@ -268,7 +290,7 @@ function manualBackup(){var d=getData();downloadBackupXLSX('clown_council_backup
 // ── PLAYERS ──
 function renderPlayers(d) {
     var h='';
-    if(currentPlayer&&d.players[currentPlayer]){var p=d.players[currentPlayer];h+='<div class="back-link" onclick="goBack()">← Назад</div><div class="list-item"><div><h3>'+currentPlayer+'</h3></div><span>'+(p.balance||0)+' ₽</span></div><button class="btn" onclick="showAddFunds()">💰 Пополнить</button><button class="btn btn-gold" onclick="showSpend()">🛒 Покупка из альбома</button><button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button><button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button><h3 style="margin-top:20px;color:var(--dim);">📋 История</h3>';if(!p.history||!p.history.length)h+='<div class="empty">Нет операций</div>';else{var hist=p.history.slice().reverse();for(var i=0;i<hist.length;i++){var hi=hist[i],s='+',c='text-success';if(hi.type==='spend'){s='−';c='text-danger';}if(hi.type==='order'){s='🔒';c='text-accent';}h+='<div class="history-item"><span class="'+c+'"><b>'+s+(hi.amount||0)+' ₽</b></span> — '+(hi.card||'')+'<br><small>'+(hi.date||'')+'</small></div>';}}}
+    if(currentPlayer&&d.players[currentPlayer]){var p=d.players[currentPlayer];h+='<div class="back-link" onclick="goBack()">← Назад</div><div class="list-item"><div><h3>'+currentPlayer+'</h3></div><span>'+(p.balance||0)+' ₽</span></div><button class="btn" onclick="showAddFunds()">💰 Пополнить</button><button class="btn btn-gold" onclick="showSpend()">🛒 Покупка из альбома</button><button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button><button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button><h3 style="margin-top:24px;color:var(--dim);">📋 История</h3>';if(!p.history||!p.history.length)h+='<div class="empty">Нет операций</div>';else{var hist=p.history.slice().reverse();for(var i=0;i<hist.length;i++){var hi=hist[i],s='+',c='text-success';if(hi.type==='spend'){s='−';c='text-danger';}if(hi.type==='order'){s='🔒';c='text-accent';}h+='<div class="history-item"><span class="'+c+'"><b>'+s+(hi.amount||0)+' ₽</b></span> — '+(hi.card||'')+'<br><small>'+(hi.date||'')+'</small></div>';}}}
     else{currentPlayer=null;h+='<button class="btn btn-primary" onclick="showAddPlayer()">+ Добавить игрока</button>';var n=Object.keys(d.players).sort();if(!n.length)h+='<div class="empty">Пока никого нет</div>';else for(var i=0;i<n.length;i++)h+='<div class="list-item" onclick="openPlayer(\''+n[i]+'\')"><div><h3>'+n[i]+'</h3></div><span>'+(d.players[n[i]].balance||0)+' ₽</span></div>';}
     return h;
 }
@@ -295,14 +317,14 @@ function editSaleCard(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.lengt
 function saveSaleCard(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].name=document.getElementById('saleName').value.trim();d.saleCards[i].set=document.getElementById('saleSet').value.trim();d.saleCards[i].collector=document.getElementById('saleCollector').value.trim();d.saleCards[i].condition=document.getElementById('saleCondition').value;d.saleCards[i].foil=document.getElementById('saleFoil').checked;d.saleCards[i].price=document.getElementById('salePrice').value.trim();d.saleCards[i].oracle=document.getElementById('saleOracle').value.trim();break;}}saveData(d);closeModal();render();}
 function setSalePrice(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;openModal('<h2>💰</h2><p>'+c.name+'</p><input id="newPrice" type="number" value="'+(c.price||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-price-btn" onclick="saveSalePrice(\''+id+'\')">Сохранить</button></div>');}
 function saveSalePrice(id){var d=getData();for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){d.saleCards[i].price=document.getElementById('newPrice').value.trim();break;}}saveData(d);closeModal();render();}
-function sellToPlayer(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c||!c.price)return alert('Установи цену!');var n=Object.keys(d.players).sort();if(!n.length)return alert('Нет игроков!');var h='<h2>💵</h2><p>'+c.name+'</p><p style="font-size:18px;"><b>'+c.price+' ₽</b></p><select id="sellPlayer">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+' ('+(d.players[n[i]].balance||0)+' ₽)</option>';h+='</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="confirmSellToPlayer(\''+id+'\')">Продать</button></div>';openModal(h);}
+function sellToPlayer(id){var d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c||!c.price)return alert('Установи цену!');var n=Object.keys(d.players).sort();if(!n.length)return alert('Нет игроков!');var h='<h2>💵</h2><p>'+c.name+'</p><p style="font-size:22px;"><b>'+c.price+' ₽</b></p><select id="sellPlayer">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+' ('+(d.players[n[i]].balance||0)+' ₽)</option>';h+='</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="confirmSellToPlayer(\''+id+'\')">Продать</button></div>';openModal(h);}
 function confirmSellToPlayer(id){var pl=document.getElementById('sellPlayer').value.split(' (')[0],d=getData(),c=null;for(var i=0;i<d.saleCards.length;i++){if(d.saleCards[i].id===id){c=d.saleCards[i];break;}}if(!c)return;var pr=parseInt(c.price)||0;if(d.players[pl].balance<pr)return alert('Недостаточно!');d.players[pl].balance-=pr;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:pr,type:'spend',card:c.name});d.saleCards=d.saleCards.filter(function(x){return x.id!==id;});saveData(d);closeModal();alert('Продано!');render();}
 function deleteSaleCard(id){if(!confirm('Удалить?'))return;var d=getData();d.saleCards=d.saleCards.filter(function(c){return c.id!==id;});saveData(d);render();}
 function clearSale(){if(!confirm('Очистить?'))return;var d=getData();d.saleCards=[];saveData(d);render();}
-function renderSale(d){var h='',s=(document.getElementById('searchBox').value||'').toLowerCase(),cards=d.saleCards||[],f=[];for(var i=0;i<cards.length;i++){if(s===''||(cards[i].name||'').toLowerCase().indexOf(s)!==-1||(cards[i].oracle||'').toLowerCase().indexOf(s)!==-1)f.push(cards[i]);}h+='<div class="stats">💵 Карт: <b>'+cards.length+'</b> | <b>'+f.length+'</b></div><button class="btn btn-sell-btn" onclick="showAddSaleCard()">+ Добавить</button>';if(cards.length)h+='<button class="btn btn-danger" style="margin-top:4px;" onclick="clearSale()">🗑 Очистить</button>';if(!f.length)h+='<div class="empty">'+(cards.length?'Ничего не найдено.':'Пусто.')+'</div>';else for(var i=0;i<f.length;i++){var c=f[i];h+='<div class="sale-item"><h3>🃏 '+(c.name||'???')+'</h3>';if(c.set||c.collector){h+='<div class="meta">';if(c.set)h+='<span>📗 '+c.set.toUpperCase()+'</span>';if(c.collector)h+='<span>#'+c.collector+'</span>';if(c.foil)h+='<span style="color:var(--gold);">✨ FOIL</span>';h+='</div>';}if(c.oracle)h+='<div class="oracle">'+c.oracle+'</div>';h+='<div class="price">'+(c.price?c.price+' ₽':'<span class="no-price">Цена не задана</span>')+'</div><div class="sale-actions"><button class="btn btn-small btn-sell-btn" onclick="sellToPlayer(\''+c.id+'\')">💵</button><button class="btn btn-small btn-price-btn" onclick="setSalePrice(\''+c.id+'\')">💰</button><button class="btn btn-small" style="background:var(--info);" onclick="editSaleCard(\''+c.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteSaleCard(\''+c.id+'\')">🗑</button></div></div>';}return h;}
+function renderSale(d){var h='',s=(document.getElementById('searchBox').value||'').toLowerCase(),cards=d.saleCards||[],f=[];for(var i=0;i<cards.length;i++){if(s===''||(cards[i].name||'').toLowerCase().indexOf(s)!==-1||(cards[i].oracle||'').toLowerCase().indexOf(s)!==-1)f.push(cards[i]);}h+='<div class="stats">💵 Карт: <b>'+cards.length+'</b> | <b>'+f.length+'</b></div><button class="btn btn-sell-btn" onclick="showAddSaleCard()">+ Добавить</button>';if(cards.length)h+='<button class="btn btn-danger" style="margin-top:10px;" onclick="clearSale()">🗑 Очистить</button>';if(!f.length)h+='<div class="empty">'+(cards.length?'Ничего не найдено.':'Пусто.')+'</div>';else for(var i=0;i<f.length;i++){var c=f[i];h+='<div class="sale-item"><h3>🃏 '+(c.name||'???')+'</h3>';if(c.set||c.collector){h+='<div class="meta">';if(c.set)h+='<span>📗 '+c.set.toUpperCase()+'</span>';if(c.collector)h+='<span>#'+c.collector+'</span>';if(c.foil)h+='<span style="color:var(--gold);">✨ FOIL</span>';h+='</div>';}if(c.oracle)h+='<div class="oracle">'+c.oracle+'</div>';h+='<div class="price">'+(c.price?c.price+' ₽':'<span class="no-price">Цена не задана</span>')+'</div><div class="sale-actions"><button class="btn btn-small btn-sell-btn" onclick="sellToPlayer(\''+c.id+'\')">💵</button><button class="btn btn-small btn-price-btn" onclick="setSalePrice(\''+c.id+'\')">💰</button><button class="btn btn-small" style="background:var(--info);" onclick="editSaleCard(\''+c.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteSaleCard(\''+c.id+'\')">🗑</button></div></div>';}return h;}
 
 // ── ORDERS ──
-function renderOrders(d){var h='',p=[],done=[];for(var i=0;i<d.orders.length;i++){if(d.orders[i].status==='pending')p.push(d.orders[i]);else done.push(d.orders[i]);}h+='<button class="btn btn-primary" onclick="showAddOrder()">+ Новый заказ</button>';if(!p.length&&!done.length)h+='<div class="empty">📭 Заказов нет</div>';if(p.length){h+='<h3 style="color:var(--accent);margin:16px 0 8px;">⏳ Ожидают ('+p.length+')</h3>';for(var i=0;i<p.length;i++){var o=p[i];h+='<div class="list-item" style="border-left-color:var(--accent);"><div><b>'+o.playerName+'</b><br>'+o.card+'<br><small>'+o.date+'</small></div><div style="text-align:right;"><span>'+o.amount+' ₽</span><br><button class="btn btn-small" style="background:var(--success);" onclick="completeOrder(\''+o.id+'\')">✅</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteOrder(\''+o.id+'\')">🗑</button></div></div>';}}if(done.length){h+='<h3 style="color:var(--dim);margin-top:16px;">✅ Выполненные</h3>';for(var i=done.length-1;i>=Math.max(0,done.length-5);i--)h+='<div class="list-item" style="opacity:0.6;"><div><b>'+done[i].playerName+'</b><br>'+done[i].card+'</div><div>'+done[i].amount+' ₽</div></div>';}return h;}
+function renderOrders(d){var h='',p=[],done=[];for(var i=0;i<d.orders.length;i++){if(d.orders[i].status==='pending')p.push(d.orders[i]);else done.push(d.orders[i]);}h+='<button class="btn btn-primary" onclick="showAddOrder()">+ Новый заказ</button>';if(!p.length&&!done.length)h+='<div class="empty">📭 Заказов нет</div>';if(p.length){h+='<h3 style="color:var(--accent);margin:20px 0 10px;">⏳ Ожидают ('+p.length+')</h3>';for(var i=0;i<p.length;i++){var o=p[i];h+='<div class="list-item" style="border-left-color:var(--accent);"><div><b>'+o.playerName+'</b><br>'+o.card+'<br><small>'+o.date+'</small></div><div style="text-align:right;"><span>'+o.amount+' ₽</span><br><button class="btn btn-small" style="background:var(--success);" onclick="completeOrder(\''+o.id+'\')">✅</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteOrder(\''+o.id+'\')">🗑</button></div></div>';}}if(done.length){h+='<h3 style="color:var(--dim);margin-top:20px;">✅ Выполненные</h3>';for(var i=done.length-1;i>=Math.max(0,done.length-5);i--)h+='<div class="list-item" style="opacity:0.6;"><div><b>'+done[i].playerName+'</b><br>'+done[i].card+'</div><div>'+done[i].amount+' ₽</div></div>';}return h;}
 function showAddOrder(){var d=getData(),n=Object.keys(d.players).sort(),h='<h2>📦</h2><select id="orderPlayerGlobal">';for(var i=0;i<n.length;i++)h+='<option>'+n[i]+'</option>';h+='</select><input id="orderCardGlobal" placeholder="Карта"><input id="orderBaseGlobal" type="number" placeholder="Цена" oninput="updateOrderTotalGlobal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderCommGlobal" checked onchange="updateOrderTotalGlobal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotalGlobal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="placeOrderGlobal()">Заказать</button></div>';openModal(h);}
 function updateOrderTotalGlobal(){document.getElementById('orderTotalGlobal').innerText=((document.getElementById('orderCommGlobal').checked?Math.round((parseInt(document.getElementById('orderBaseGlobal').value)||0)*1.2):(parseInt(document.getElementById('orderBaseGlobal').value)||0)))+' ₽';}
 function placeOrderGlobal(){var pl=document.getElementById('orderPlayerGlobal').value,c=document.getElementById('orderCardGlobal').value.trim(),b=parseInt(document.getElementById('orderBaseGlobal').value)||0,cm=document.getElementById('orderCommGlobal').checked,t=cm?Math.round(b*1.2):b;if(!c||t<=0)return alert('Заполни!');var d=getData();if(d.players[pl].balance<t)return alert('Недостаточно!');d.players[pl].balance-=t;d.players[pl].history.push({date:new Date().toLocaleString('ru-RU'),amount:t,type:'order',card:c+' (ЗАКАЗ)'});d.orders.push({id:genId(),playerName:pl,card:c,amount:t,status:'pending',date:new Date().toLocaleString('ru-RU')});saveData(d);closeModal();render();}
@@ -310,7 +332,7 @@ function completeOrder(id){var d=getData();for(var i=0;i<d.orders.length;i++){if
 function deleteOrder(id){if(!confirm('Удалить?'))return;var d=getData();d.orders=d.orders.filter(function(o){return o.id!==id;});saveData(d);render();}
 
 // ── TASKS ──
-function renderTasks(d){var h='',folds=d.taskFolders||[];if(currentFolder){var fo=null;for(var i=0;i<folds.length;i++){if(folds[i].id===currentFolder){fo=folds[i];break;}}if(!fo){currentFolder=null;return renderTasks(d);}var ts=fo.tasks||[],s=(document.getElementById('searchBox').value||'').toLowerCase(),ft=[];for(var i=0;i<ts.length;i++){if(s===''||(ts[i].title||'').toLowerCase().indexOf(s)!==-1||(ts[i].desc||'').toLowerCase().indexOf(s)!==-1)ft.push(ts[i]);}h+='<div class="breadcrumb"><span onclick="goBackFolder()">📁 Все папки</span> → 📂 '+fo.name+'</div><button class="btn btn-info" onclick="showAddTask()">+ Новая задача</button><div class="stats">📋 Задач: <b>'+ts.length+'</b> | ✅ <b>'+ts.filter(function(t){return t.done;}).length+'</b></div>';if(!ft.length)h+='<div class="empty">'+(ts.length?'Ничего не найдено.':'Папка пуста.')+'</div>';else{ft.sort(function(a,b){return (a.done?1:0)-(b.done?1:0);});for(var i=0;i<ft.length;i++){var t=ft[i];h+='<div class="task-item'+(t.done?' task-done':'')+'"><div style="display:flex;justify-content:space-between;"><h3>'+(t.done?'✅ ':'⬜ ')+(t.title||'')+'</h3>'+(t.price?'<span style="color:var(--gold);">'+t.price+' ₽</span>':'')+'</div>';if(t.desc)h+='<div class="task-meta">'+t.desc+'</div>';if(t.link)h+='<div class="task-link">🔗 <a href="'+t.link+'" target="_blank">'+t.link+'</a></div>';h+='<div class="btn-row" style="margin-top:8px;"><button class="btn btn-small btn-sell-btn" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'↩':'✅')+'</button><button class="btn btn-small btn-price-btn" onclick="editTask(\''+t.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteTask(\''+t.id+'\')">🗑</button></div></div>';}}h+='<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editFolder(\''+fo.id+'\')">✏️</button><button class="btn btn-danger" onclick="deleteFolder(\''+fo.id+'\')">🗑</button></div>';return h;}h+='<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button>';if(!folds.length)h+='<div class="empty">Нет папок.</div>';else for(var i=0;i<folds.length;i++){var f=folds[i];h+='<div class="folder-item" onclick="openFolder(\''+f.id+'\')"><div><h3>📂 '+(f.name||'Без имени')+'</h3><div class="folder-stats">'+(f.tasks||[]).length+' задач</div></div><span>→</span></div>';}return h;}
+function renderTasks(d){var h='',folds=d.taskFolders||[];if(currentFolder){var fo=null;for(var i=0;i<folds.length;i++){if(folds[i].id===currentFolder){fo=folds[i];break;}}if(!fo){currentFolder=null;return renderTasks(d);}var ts=fo.tasks||[],s=(document.getElementById('searchBox').value||'').toLowerCase(),ft=[];for(var i=0;i<ts.length;i++){if(s===''||(ts[i].title||'').toLowerCase().indexOf(s)!==-1||(ts[i].desc||'').toLowerCase().indexOf(s)!==-1)ft.push(ts[i]);}h+='<div class="breadcrumb"><span onclick="goBackFolder()">📁 Все папки</span> → 📂 '+fo.name+'</div><button class="btn btn-info" onclick="showAddTask()">+ Новая задача</button><div class="stats">📋 Задач: <b>'+ts.length+'</b> | ✅ <b>'+ts.filter(function(t){return t.done;}).length+'</b></div>';if(!ft.length)h+='<div class="empty">'+(ts.length?'Ничего не найдено.':'Папка пуста.')+'</div>';else{ft.sort(function(a,b){return (a.done?1:0)-(b.done?1:0);});for(var i=0;i<ft.length;i++){var t=ft[i];h+='<div class="task-item'+(t.done?' task-done':'')+'"><div style="display:flex;justify-content:space-between;"><h3>'+(t.done?'✅ ':'⬜ ')+(t.title||'')+'</h3>'+(t.price?'<span style="color:var(--gold);">'+t.price+' ₽</span>':'')+'</div>';if(t.desc)h+='<div class="task-meta">'+t.desc+'</div>';if(t.link)h+='<div class="task-link">🔗 <a href="'+t.link+'" target="_blank">'+t.link+'</a></div>';h+='<div class="btn-row" style="margin-top:10px;"><button class="btn btn-small btn-sell-btn" onclick="toggleTask(\''+t.id+'\')">'+(t.done?'↩':'✅')+'</button><button class="btn btn-small btn-price-btn" onclick="editTask(\''+t.id+'\')">✏️</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteTask(\''+t.id+'\')">🗑</button></div></div>';}}h+='<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-warning" onclick="editFolder(\''+fo.id+'\')">✏️</button><button class="btn btn-danger" onclick="deleteFolder(\''+fo.id+'\')">🗑</button></div>';return h;}h+='<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button>';if(!folds.length)h+='<div class="empty">Нет папок.</div>';else for(var i=0;i<folds.length;i++){var f=folds[i];h+='<div class="folder-item" onclick="openFolder(\''+f.id+'\')"><div><h3>📂 '+(f.name||'Без имени')+'</h3><div class="folder-stats">'+(f.tasks||[]).length+' задач</div></div><span>→</span></div>';}return h;}
 function openFolder(id){currentFolder=id;render();}
 function showAddFolder(){openModal('<h2>📁</h2><input id="folderName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="addFolder()">Создать</button></div>');}
 function addFolder(){var n=document.getElementById('folderName').value.trim();if(!n)return;var d=getData();d.taskFolders.push({id:genId(),name:n,tasks:[]});saveData(d);closeModal();render();}
@@ -333,9 +355,9 @@ function renderTournaments(d) {
         var parts=trn.participants||[],pc=parts.filter(function(p){return p.paid;}).length,pf=0;
         for(var i=0;i<parts.length;i++){if(parts[i].paid)pf+=(parseInt(parts[i].entryFee)||500);}
         h+='<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все папки</span> → 🏟 '+trn.name+'</div>';
-        h+='<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">'+pf.toLocaleString()+' ₽</div><div style="font-size:12px;color:var(--dim);">Оплатили: '+pc+' из '+parts.length+'</div></div>';
+        h+='<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">'+pf.toLocaleString()+' ₽</div><div style="font-size:14px;color:var(--dim);">Оплатили: '+pc+' из '+parts.length+'</div></div>';
         h+='<div class="stats">👥 Игроков: <b>'+parts.length+'</b> | 💰 Оплатили: <b>'+pc+'</b></div>';
-        h+='<div style="display:flex;gap:8px;margin-bottom:12px;"><button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Добавить игрока</button><button class="btn btn-export" style="flex:1;" onclick="exportTournament(\''+trn.id+'\')">📥 Excel</button></div>';
+        h+='<div style="display:flex;gap:10px;margin-bottom:14px;"><button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Игрок</button><button class="btn btn-export" style="flex:1;" onclick="exportTournament(\''+trn.id+'\')">📥 Excel</button></div>';
         if(!parts.length)h+='<div class="empty">Нет игроков.</div>';
         else for(var i=0;i<parts.length;i++){
             var p=parts[i];
@@ -343,7 +365,7 @@ function renderTournaments(d) {
             if(p.commander||p.partner||p.companion){h+='<div class="commanders">';if(p.commander)h+='🎖 '+p.commander+' ';if(p.partner)h+='🤝 '+p.partner+' ';if(p.companion)h+='🐾 '+p.companion;h+='</div>';}
             h+='</div><div class="actions"><button class="btn btn-small" style="background:var(--info);color:white;" onclick="editParticipant(\''+p.id+'\')">✏️</button><div class="paid-badge '+(p.paid?'paid':'unpaid')+'" onclick="togglePaid(\''+p.id+'\')">'+(p.paid?'✅ Оплатил':'❌ Не оплатил')+'</div><button class="btn btn-small" style="background:var(--danger);" onclick="deleteParticipant(\''+p.id+'\')">🗑</button></div></div>';
         }
-        h+='<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editTournament(\''+trn.id+'\')">✏️ Переименовать</button><button class="btn btn-danger" onclick="deleteTournament(\''+trn.id+'\')">🗑 Удалить</button></div>';
+        h+='<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-warning" onclick="editTournament(\''+trn.id+'\')">✏️ Переименовать</button><button class="btn btn-danger" onclick="deleteTournament(\''+trn.id+'\')">🗑 Удалить</button></div>';
         return h;
     }
     h+='<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новая папка турнира</button>';
@@ -363,9 +385,9 @@ function editParticipant(id){var d=getData(),p=null;for(var i=0;i<d.tournaments.
 function saveParticipant(id){var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){for(var j=0;j<d.tournaments[i].participants.length;j++){if(d.tournaments[i].participants[j].id===id){d.tournaments[i].participants[j].name=document.getElementById('editPartName').value.trim();d.tournaments[i].participants[j].deckLink=document.getElementById('editPartDeckLink').value.trim();d.tournaments[i].participants[j].commander=document.getElementById('editPartCommander').value.trim();d.tournaments[i].participants[j].partner=document.getElementById('editPartPartner').value.trim();d.tournaments[i].participants[j].companion=document.getElementById('editPartCompanion').value.trim();d.tournaments[i].participants[j].entryFee=document.getElementById('editPartFee').value.trim()||'500';break;}}break;}}saveData(d);closeModal();render();}
 function togglePaid(id){var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){for(var j=0;j<d.tournaments[i].participants.length;j++){if(d.tournaments[i].participants[j].id===id){d.tournaments[i].participants[j].paid=!d.tournaments[i].participants[j].paid;break;}}break;}}saveData(d);render();}
 function deleteParticipant(id){if(!confirm('Удалить?'))return;var d=getData();for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===currentTournament){d.tournaments[i].participants=d.tournaments[i].participants.filter(function(p){return p.id!==id;});break;}}saveData(d);render();}
-function exportTournament(id){var d=getData(),trn=null;for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){trn=d.tournaments[i];break;}}if(!trn)return;var p=trn.participants||[],pc=p.filter(function(x){return x.paid;}).length,pf=0;for(var i=0;i<p.length;i++){if(p[i].paid)pf+=(parseInt(p[i].entryFee)||500);}var filename=(trn.name||'tournament')+'.xlsx';ensureXLSX(function(){var data=[['Турнир:',trn.name||''],['Призовой фонд:',pf+' ₽'],['Оплатили:',pc+' из '+p.length],[],['Игрок','Ссылка на колоду','Командир','Партнёр','Компаньон','Взнос','Статус']];for(var i=0;i<p.length;i++){data.push([p[i].name||'',p[i].deckLink||'',p[i].commander||'',p[i].partner||'',p[i].companion||'',(p[i].entryFee||'500')+' ₽',p[i].paid?'Оплатил':'Не оплатил']);}var wb=XLSX.utils.book_new();var ws=XLSX.utils.aoa_to_sheet(data);XLSX.utils.book_append_sheet(wb,ws,'Турнир');var wbout=XLSX.write(wb,{bookType:'xlsx',type:'array'});saveFileToDevice(filename,new Blob([wbout],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),function(s){showToast(s?'✅ Файл сохранён!':'⚠️ Не удалось');});});}
+function exportTournament(id){var d=getData(),trn=null;for(var i=0;i<d.tournaments.length;i++){if(d.tournaments[i].id===id){trn=d.tournaments[i];break;}}if(!trn)return;var p=trn.participants||[],pc=p.filter(function(x){return x.paid;}).length,pf=0;for(var i=0;i<p.length;i++){if(p[i].paid)pf+=(parseInt(p[i].entryFee)||500);}var filename=(trn.name||'tournament')+'.xlsx';ensureXLSX(function(){var data=[['Турнир:',trn.name||''],['Призовой фонд:',pf+' ₽'],['Оплатили:',pc+' из '+p.length],[],['Игрок','Ссылка на колоду','Командир','Партнёр','Компаньон','Взнос','Статус']];for(var i=0;i<p.length;i++){data.push([p[i].name||'',p[i].deckLink||'',p[i].commander||'',p[i].partner||'',p[i].companion||'',(p[i].entryFee||'500')+' ₽',p[i].paid?'Оплатил':'Не оплатил']);}var wb=XLSX.utils.book_new();var ws=XLSX.utils.aoa_to_sheet(data);XLSX.utils.book_append_sheet(wb,ws,'Турнир');saveXLSXToDevice(filename,wb);});}
 
-// ── CHALLENGES (НОВАЯ ВКЛАДКА!) ──
+// ── CHALLENGES ──
 function renderChallenges(d) {
     var h='',folds=d.challengeFolders||[];
     if(currentChallengeFolder){
@@ -395,7 +417,7 @@ function renderChallenges(d) {
                 h+='</div></div>';
             }
         }
-        h+='<div style="margin-top:16px;border-top:1px solid #333;padding-top:12px;"><button class="btn btn-warning" onclick="editChallengeFolder(\''+cf.id+'\')">✏️ Переименовать</button><button class="btn btn-danger" onclick="deleteChallengeFolder(\''+cf.id+'\')">🗑 Удалить</button></div>';
+        h+='<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-warning" onclick="editChallengeFolder(\''+cf.id+'\')">✏️ Переименовать</button><button class="btn btn-danger" onclick="deleteChallengeFolder(\''+cf.id+'\')">🗑 Удалить</button></div>';
         return h;
     }
     h+='<button class="btn btn-challenge" onclick="showAddChallengeFolder()">🔥 Новая папка челенджей</button>';
@@ -409,59 +431,11 @@ function addChallengeFolder(){var n=document.getElementById('cfName').value.trim
 function editChallengeFolder(id){var d=getData(),f=null;for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===id){f=d.challengeFolders[i];break;}}if(!f)return;openModal('<h2>✏️</h2><input id="cfName" value="'+(f.name||'')+'"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="saveChallengeFolder(\''+id+'\')">Сохранить</button></div>');}
 function saveChallengeFolder(id){var n=document.getElementById('cfName').value.trim();if(!n)return;var d=getData();for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===id){d.challengeFolders[i].name=n;break;}}saveData(d);closeModal();render();}
 function deleteChallengeFolder(id){if(!confirm('Удалить папку и все челенджи?'))return;var d=getData();d.challengeFolders=d.challengeFolders.filter(function(f){return f.id!==id;});currentChallengeFolder=null;saveData(d);render();}
-
-function showAddChallenge(){
-    var d=getData();var playerNames=Object.keys(d.players).sort();
-    var h='<h2>🔥 Новый челендж</h2>';
-    h+='<input id="chTitle" placeholder="Название челенджа">';
-    h+='<textarea id="chConditions" placeholder="Условия выполнения"></textarea>';
-    h+='<input id="chTime" placeholder="Время (например: до конца месяца)">';
-    h+='<select id="chPlayer"><option value="">— Выбери игрока —</option>';
-    for(var i=0;i<playerNames.length;i++)h+='<option value="'+playerNames[i]+'">'+playerNames[i]+'</option>';
-    h+='</select>';
-    h+='<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="addChallenge()">Создать</button></div>';
-    openModal(h);
-}
-function addChallenge(){
-    var title=document.getElementById('chTitle').value.trim();if(!title)return alert('Введи название!');
-    var d=getData();
-    for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){
-        d.challengeFolders[i].challenges.push({id:genId(),title:title,conditions:document.getElementById('chConditions').value.trim(),time:document.getElementById('chTime').value.trim(),player:document.getElementById('chPlayer').value,done:false});
-        break;
-    }}
-    saveData(d);closeModal();render();
-}
-function editChallenge(id){
-    var d=getData(),ch=null;
-    for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){ch=d.challengeFolders[i].challenges[j];break;}}break;}}
-    if(!ch)return;
-    var playerNames=Object.keys(d.players).sort();
-    var h='<h2>✏️ Редактировать</h2>';
-    h+='<input id="chTitle" value="'+(ch.title||'')+'" placeholder="Название">';
-    h+='<textarea id="chConditions">'+(ch.conditions||'')+'</textarea>';
-    h+='<input id="chTime" value="'+(ch.time||'')+'" placeholder="Время">';
-    h+='<select id="chPlayer"><option value="">— Без игрока —</option>';
-    for(var i=0;i<playerNames.length;i++)h+='<option value="'+playerNames[i]+'"'+(ch.player===playerNames[i]?' selected':'')+'>'+playerNames[i]+'</option>';
-    h+='</select>';
-    h+='<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="saveChallenge(\''+id+'\')">Сохранить</button></div>';
-    openModal(h);
-}
-function saveChallenge(id){
-    var d=getData();
-    for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){
-        d.challengeFolders[i].challenges[j].title=document.getElementById('chTitle').value.trim();
-        d.challengeFolders[i].challenges[j].conditions=document.getElementById('chConditions').value.trim();
-        d.challengeFolders[i].challenges[j].time=document.getElementById('chTime').value.trim();
-        d.challengeFolders[i].challenges[j].player=document.getElementById('chPlayer').value;
-        break;
-    }}break;}}
-    saveData(d);closeModal();render();
-}
-function toggleChallenge(id){
-    var d=getData();
-    for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){d.challengeFolders[i].challenges[j].done=!d.challengeFolders[i].challenges[j].done;break;}}break;}}
-    saveData(d);render();
-}
+function showAddChallenge(){var d=getData();var playerNames=Object.keys(d.players).sort();var h='<h2>🔥 Новый челендж</h2>';h+='<input id="chTitle" placeholder="Название челенджа">';h+='<textarea id="chConditions" placeholder="Условия выполнения"></textarea>';h+='<input id="chTime" placeholder="Время (например: до конца месяца)">';h+='<select id="chPlayer"><option value="">— Выбери игрока —</option>';for(var i=0;i<playerNames.length;i++)h+='<option value="'+playerNames[i]+'">'+playerNames[i]+'</option>';h+='</select>';h+='<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="addChallenge()">Создать</button></div>';openModal(h);}
+function addChallenge(){var title=document.getElementById('chTitle').value.trim();if(!title)return alert('Введи название!');var d=getData();for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){d.challengeFolders[i].challenges.push({id:genId(),title:title,conditions:document.getElementById('chConditions').value.trim(),time:document.getElementById('chTime').value.trim(),player:document.getElementById('chPlayer').value,done:false});break;}}saveData(d);closeModal();render();}
+function editChallenge(id){var d=getData(),ch=null;for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){ch=d.challengeFolders[i].challenges[j];break;}}break;}}if(!ch)return;var playerNames=Object.keys(d.players).sort();var h='<h2>✏️ Редактировать</h2>';h+='<input id="chTitle" value="'+(ch.title||'')+'" placeholder="Название">';h+='<textarea id="chConditions">'+(ch.conditions||'')+'</textarea>';h+='<input id="chTime" value="'+(ch.time||'')+'" placeholder="Время">';h+='<select id="chPlayer"><option value="">— Без игрока —</option>';for(var i=0;i<playerNames.length;i++)h+='<option value="'+playerNames[i]+'"'+(ch.player===playerNames[i]?' selected':'')+'>'+playerNames[i]+'</option>';h+='</select>';h+='<div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="saveChallenge(\''+id+'\')">Сохранить</button></div>';openModal(h);}
+function saveChallenge(id){var d=getData();for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){d.challengeFolders[i].challenges[j].title=document.getElementById('chTitle').value.trim();d.challengeFolders[i].challenges[j].conditions=document.getElementById('chConditions').value.trim();d.challengeFolders[i].challenges[j].time=document.getElementById('chTime').value.trim();d.challengeFolders[i].challenges[j].player=document.getElementById('chPlayer').value;break;}}break;}}saveData(d);closeModal();render();}
+function toggleChallenge(id){var d=getData();for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){for(var j=0;j<d.challengeFolders[i].challenges.length;j++){if(d.challengeFolders[i].challenges[j].id===id){d.challengeFolders[i].challenges[j].done=!d.challengeFolders[i].challenges[j].done;break;}}break;}}saveData(d);render();}
 function deleteChallenge(id){if(!confirm('Удалить?'))return;var d=getData();for(var i=0;i<d.challengeFolders.length;i++){if(d.challengeFolders[i].id===currentChallengeFolder){d.challengeFolders[i].challenges=d.challengeFolders[i].challenges.filter(function(c){return c.id!==id;});break;}}saveData(d);render();}
 
 checkAutoBackup();render();
