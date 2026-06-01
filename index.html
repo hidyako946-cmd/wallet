@@ -4,178 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>The Clown's Council</title>
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --bg: #0a0a0a; --card-bg: #141414; --gold: #c9a44b; --text: #e0d6c2;
             --dim: #8a8a8a; --accent: #7b5ea7; --danger: #8b3a3a; --success: #3a6b4a;
-            --info: #3a6b8b; --warning: #8b7a3a; --tournament: #2a6b4a; --challenge: #8b3a6b;
-            --radius: 20px; --font-sm: 14px; --font-md: 17px; --font-lg: 22px;
-            --font-xl: 28px; --padding: 28px; --btn-padding: 18px;
+            --radius: 16px; --font-md: 17px; --font-lg: 22px; --padding: 24px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: var(--bg); color: var(--text);
             font-family: -apple-system, 'Segoe UI', 'Roboto', sans-serif;
-            padding: var(--padding); padding-bottom: 140px; min-height: 100vh;
+            padding: var(--padding); padding-bottom: 120px; min-height: 100vh;
             -webkit-tap-highlight-color: transparent; user-select: none; font-size: var(--font-md);
         }
-        .header { text-align: center; margin: 28px 0 32px; }
-        .header h1 { font-size: var(--font-xl); color: var(--gold); letter-spacing: 2px; }
-        .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+        .header { text-align: center; margin: 24px 0 28px; }
+        .header h1 { font-size: 28px; color: var(--gold); letter-spacing: 2px; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
         .tabs button {
-            flex: 1; min-width: 55px; padding: 14px 6px; background: var(--card-bg);
-            border: 1px solid #222; color: var(--dim); font-size: 12px; font-weight: 700;
-            border-radius: 14px; cursor: pointer;
+            flex: 1; min-width: 55px; padding: 12px 4px; background: var(--card-bg);
+            border: 1px solid #222; color: var(--dim); font-size: 11px; font-weight: 700;
+            border-radius: 12px; cursor: pointer;
         }
         .tabs button.active { background: var(--accent); color: white; border-color: var(--accent); }
         .list-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid #444; cursor: pointer;
+            background: var(--card-bg); border-radius: var(--radius); padding: 18px;
+            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+            border-left: 4px solid #444; cursor: pointer;
         }
         .list-item h3 { font-size: var(--font-lg); }
-        .list-item span { font-size: 24px; font-weight: 800; color: white; }
-        .folder-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 14px; border: 1px solid #333; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid var(--warning);
-        }
-        .folder-item.tournament { border-left-color: var(--tournament); }
-        .folder-item.challenge { border-left-color: var(--challenge); }
-        .folder-item h3 { font-size: 18px; }
-        .folder-item .folder-stats { font-size: var(--font-sm); color: var(--dim); margin-top: 4px; }
+        .list-item span { font-size: 22px; font-weight: 800; color: white; }
         .btn {
             background: var(--card-bg); border: 1px solid #333; color: white;
-            padding: var(--btn-padding); border-radius: 14px; font-size: var(--font-md); font-weight: 700;
-            width: 100%; margin-top: 10px; cursor: pointer; text-align: center; display: block;
+            padding: 16px; border-radius: 14px; font-size: var(--font-md); font-weight: 700;
+            width: 100%; margin-top: 8px; cursor: pointer; text-align: center; display: block;
         }
         .btn-primary { background: var(--accent); border: none; }
         .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
         .btn-info { background: var(--info); border: none; color: white; }
-        .btn-tournament { background: var(--tournament); border: none; color: white; }
-        .btn-challenge { background: var(--challenge); border: none; color: white; }
-        .btn-sell-btn { background: var(--success); color: white; border: none; }
-        .btn-price-btn { background: var(--accent); color: white; border: none; }
         .btn-gold { background: transparent; border-color: var(--gold); color: var(--gold); }
         .btn-accent { background: transparent; border-color: var(--accent); color: var(--accent); }
-        .btn-warning { background: var(--warning); border: none; color: white; }
-        .btn-small { padding: 10px 16px; font-size: 12px; width: auto; display: inline-block; margin: 4px; }
-        .btn-export { background: #1a5c2a; border: 1px solid var(--success); color: var(--success); }
-        .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-box {
-            background: var(--card-bg); width: 92%; max-width: 480px; padding: 28px;
-            border-radius: 22px; border: 1px solid #333; max-height: 80vh; overflow-y: auto;
-        }
-        .modal-box h2 { color: var(--gold); margin-bottom: 20px; font-size: 24px; }
-        input, select, textarea {
-            width: 100%; padding: 16px; margin: 10px 0; background: #000;
-            border: 1px solid #333; color: white; border-radius: 12px; font-size: var(--font-md); outline: none;
-        }
-        textarea { resize: vertical; min-height: 90px; }
-        .row { display: flex; gap: 10px; margin-top: 20px; }
-        .row .btn { flex: 1; }
-        .toggle-row { display: flex; align-items: center; justify-content: space-between; margin: 14px 0; }
-        .switch { position: relative; display: inline-block; width: 56px; height: 30px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; border-radius: 30px; cursor: pointer; }
-        .slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 3px; bottom: 3px; background-color: white; border-radius: 50%; transition: 0.2s; }
-        input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(26px); }
-        .back-link { color: var(--gold); margin-bottom: 16px; display: block; cursor: pointer; font-weight: 700; font-size: var(--font-md); }
-        .history-item { padding: 10px 0; border-bottom: 1px solid #222; font-size: var(--font-sm); }
+        .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-row .btn { flex: 1; }
+        .back-link { color: var(--gold); margin-bottom: 14px; display: block; cursor: pointer; font-weight: 700; }
+        .history-item { padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
         .history-item small { color: #555; }
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
-        .text-accent { color: var(--accent); }
-        .empty { text-align: center; margin-top: 50px; color: var(--dim); font-size: var(--font-md); }
-        .stats { font-size: var(--font-sm); color: var(--dim); margin-bottom: 16px; }
-        .breadcrumb { font-size: var(--font-sm); color: var(--dim); margin-bottom: 16px; }
-        .breadcrumb span { color: var(--gold); cursor: pointer; font-weight: 700; }
-        .sync-info { font-size: 11px; color: #555; text-align: center; margin-top: 10px; padding-bottom: 20px; }
-        .sync-info span { color: var(--success); }
-        .participant-row {
-            background: var(--card-bg); border-radius: 14px; padding: 18px;
-            margin-bottom: 10px; border: 1px solid #222;
-            display: flex; justify-content: space-between; align-items: flex-start;
-            flex-wrap: wrap; gap: 10px;
+        .empty { text-align: center; margin-top: 40px; color: var(--dim); }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 999; align-items: center; justify-content: center;
         }
-        .participant-row .info { flex: 1; min-width: 0; }
-        .participant-row .info h4 { font-size: var(--font-md); margin-bottom: 3px; }
-        .participant-row .info .deck { font-size: 12px; color: var(--info); word-break: break-all; }
-        .participant-row .info .commanders { font-size: 11px; color: var(--accent); margin-top: 3px; }
-        .participant-row .actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
-        .paid-badge {
-            padding: 8px 18px; border-radius: 24px; font-size: var(--font-sm); font-weight: 700;
-            cursor: pointer; border: 2px solid #333; min-width: 100px; text-align: center;
+        .modal.active { display: flex; }
+        .modal-box {
+            background: var(--card-bg); width: 92%; max-width: 450px; padding: 24px;
+            border-radius: 20px; border: 1px solid #333; max-height: 80vh; overflow-y: auto;
         }
-        .paid-badge.paid { background: var(--success); border-color: var(--success); color: white; }
-        .paid-badge.unpaid { background: transparent; border-color: var(--danger); color: var(--danger); }
-        .prize-fund {
-            background: linear-gradient(135deg, #1a3a2a, #0a1a0a);
-            border: 3px solid var(--tournament); border-radius: var(--radius);
-            padding: 22px; margin: 20px 0; text-align: center;
+        .modal-box h2 { color: var(--gold); margin-bottom: 18px; font-size: 22px; }
+        input, select, textarea {
+            width: 100%; padding: 14px; margin: 8px 0; background: #000;
+            border: 1px solid #333; color: white; border-radius: 10px; font-size: var(--font-md); outline: none;
         }
-        .prize-fund h3 { font-size: var(--font-md); color: var(--dim); margin-bottom: 6px; }
-        .prize-fund .amount { font-size: 34px; font-weight: 800; color: var(--gold); }
-        .challenge-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 12px; border: 1px solid #333;
-            border-left: 5px solid var(--challenge);
+        .backup-bar {
+            text-align: center; padding: 10px; margin-top: 20px;
+            font-size: 11px; color: #555; border-top: 1px solid #222;
         }
-        .challenge-item.done { opacity: 0.55; border-left-color: var(--success); }
-        .challenge-item h4 { font-size: var(--font-md); color: var(--gold-light); margin-bottom: 8px; }
-        .challenge-item .ch-meta { font-size: var(--font-sm); color: var(--dim); margin-bottom: 6px; }
-        .challenge-item .ch-conditions { font-size: var(--font-sm); color: #ccc; margin: 10px 0; padding: 12px; background: #0a0a0a; border-radius: 10px; line-height: 1.5; }
-        .done-badge {
-            display: inline-block; padding: 8px 18px; border-radius: 24px;
-            font-size: var(--font-sm); font-weight: 700; cursor: pointer; border: 2px solid #333;
-            min-width: 110px; text-align: center;
-        }
-        .done-badge.completed { background: var(--success); border-color: var(--success); color: white; }
-        .done-badge.pending { background: transparent; border-color: var(--challenge); color: var(--challenge); }
-        .sale-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 18px;
-            margin-bottom: 14px; border: 1px solid #222;
-        }
-        .sale-item h3 { font-size: var(--font-md); color: var(--gold-light); margin-bottom: 6px; }
-        .sale-item .oracle { font-size: 12px; color: var(--dim); margin: 8px 0; padding: 10px; background: #0a0a0a; border-radius: 10px; font-style: italic; line-height: 1.5; }
-        .sale-item .price { font-size: 24px; font-weight: 800; color: white; }
-        .sale-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
-        .task-item {
-            background: var(--card-bg); border-radius: var(--radius); padding: 16px;
-            margin-bottom: 10px; border: 1px solid #222;
-        }
-        .task-item h3 { font-size: var(--font-md); color: var(--text); margin-bottom: 6px; }
-        .task-item .task-meta { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
-        .task-item .task-link { font-size: 11px; color: var(--info); word-break: break-all; }
-        .task-done { opacity: 0.5; }
-        .task-done h3 { text-decoration: line-through; }
-        .autocomplete-wrap { position: relative; }
-        .autocomplete-list {
-            position: absolute; top: 100%; left: 0; right: 0; z-index: 10;
-            background: #1a1a1a; border: 1px solid #333; border-radius: 0 0 10px 10px;
-            max-height: 200px; overflow-y: auto; display: none;
-        }
-        .autocomplete-list div { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #222; color: #ccc; }
-        .autocomplete-list div:hover { background: var(--accent); color: white; }
-        .toast {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--success); color: white; padding: 14px 28px;
-            border-radius: 24px; font-weight: 700; z-index: 9999; font-size: var(--font-md);
-            animation: fadeInOut 2.5s ease;
-        }
-        .toast.error { background: var(--danger); }
-        @keyframes fadeInOut {
-            0% { opacity: 0; bottom: 0; } 15% { opacity: 1; bottom: 30px; }
-            85% { opacity: 1; bottom: 30px; } 100% { opacity: 0; bottom: 0; }
-        }
+        .backup-bar span { color: var(--gold); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -193,57 +87,48 @@
 
 <div id="app"></div>
 <div id="modal" class="modal" onclick="if(event.target===this)closeModal()"><div class="modal-box" id="modalContent"></div></div>
+<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
 
 <script>
-// ═══════════════ НАСТРОЙКИ ═══════════════
-var GITHUB_USER = 'hidyako946-cmd';
-var GITHUB_REPO = 'wallet';
-var GITHUB_TOKEN = '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';
-var DATA_FILE = 'data.json';
-
-var API_URL = 'https://api.github.com/repos/' + GITHUB_USER + '/' + GITHUB_REPO + '/contents/' + DATA_FILE;
+// ═══════════ ЛОКАЛЬНОЕ ХРАНЕНИЕ ═══════════
+var STORE = 'clown_council_data';
 var appData = { players: {}, orders: [], saleCards: [], taskFolders: [], tournaments: [], challengeFolders: [] };
-var dataSha = null, isSaving = false, lastSync = null;
 
+function loadData() {
+    var raw = localStorage.getItem(STORE);
+    if (raw) { try { appData = JSON.parse(raw); } catch(e) {} }
+}
+function saveData() { localStorage.setItem(STORE, JSON.stringify(appData)); }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
-function showToast(msg, isError) {
-    var t = document.createElement('div'); t.className = 'toast' + (isError ? ' error' : '');
-    t.textContent = msg; document.body.appendChild(t);
-    setTimeout(function() { if (t.parentNode) t.parentNode.removeChild(t); }, 2600);
+
+// ═══════════ ЭКСПОРТ / ИМПОРТ ═══════════
+function exportJSON() {
+    var blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = 'clown_council_backup.json';
+    a.click(); URL.revokeObjectURL(url);
+}
+function triggerImport() { document.getElementById('importFile').click(); }
+function importData(event) {
+    var file = event.target.files[0]; if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var data = JSON.parse(e.target.result);
+            appData.players = data.players || {};
+            appData.orders = data.orders || [];
+            appData.saleCards = data.saleCards || [];
+            appData.taskFolders = data.taskFolders || [];
+            appData.tournaments = data.tournaments || [];
+            appData.challengeFolders = data.challengeFolders || [];
+            saveData(); render(); alert('✅ Данные загружены!');
+        } catch(err) { alert('❌ Ошибка в файле'); }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
 }
 
-// ═══════════════ GITHUB API ═══════════════
-async function loadData() {
-    try {
-        var resp = await fetch(API_URL, { headers: { 'Authorization': 'token ' + GITHUB_TOKEN } });
-        if (!resp.ok) { if (resp.status === 404) return; throw new Error('HTTP ' + resp.status); }
-        var json = await resp.json(); dataSha = json.sha;
-        var content = atob(json.content.replace(/\n/g, ''));
-        var parsed = JSON.parse(content);
-        appData.players = parsed.players || {};
-        appData.orders = parsed.orders || [];
-        appData.saleCards = parsed.saleCards || [];
-        appData.taskFolders = parsed.taskFolders || [];
-        appData.tournaments = parsed.tournaments || [];
-        appData.challengeFolders = parsed.challengeFolders || [];
-        lastSync = new Date();
-    } catch(e) { console.error(e); showToast('⚠️ Ошибка загрузки', true); }
-}
-
-async function saveData() {
-    if (isSaving) return; isSaving = true;
-    try {
-        var content = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        var body = { message: 'Update data', content: content };
-        if (dataSha) body.sha = dataSha;
-        var resp = await fetch(API_URL, { method: 'PUT', headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        if (!resp.ok) { if (resp.status === 409) { await loadData(); return await saveData(); } throw new Error('HTTP ' + resp.status); }
-        var json = await resp.json(); dataSha = json.content.sha; lastSync = new Date();
-    } catch(e) { console.error(e); showToast('⚠️ Ошибка сохранения', true); }
-    isSaving = false;
-}
-
-// ═══════════════ НАВИГАЦИЯ ═══════════════
+// ═══════════ НАВИГАЦИЯ ═══════════
 var currentTab = 'players', currentPlayer = null, currentFolder = null, currentTournament = null, currentChallengeFolder = null;
 
 function switchTab(t) {
@@ -267,12 +152,11 @@ function render() {
     else if (currentTab === 'tasks') html = renderTasks();
     else if (currentTab === 'tournaments') html = renderTournaments();
     else if (currentTab === 'challenges') html = renderChallenges();
-    var syncText = lastSync ? 'Синхронизация: ' + lastSync.toLocaleString('ru-RU') : 'Не синхронизировано';
-    html += '<div class="sync-info">☁️ GitHub Cloud | <span>' + syncText + '</span></div>';
+    html += '<div class="backup-bar">💾 Данные на устройстве | <span onclick="exportJSON()">Экспорт JSON</span> | <span onclick="triggerImport()">Импорт JSON</span></div>';
     app.innerHTML = html;
 }
 
-// ═══════════════ PLAYERS ═══════════════
+// ═══════════ PLAYERS ═══════════
 function renderPlayers() {
     var h = '';
     if (currentPlayer && appData.players[currentPlayer]) {
@@ -283,7 +167,7 @@ function renderPlayers() {
         h += '<button class="btn btn-gold" onclick="showSpend()">🛒 Покупка из альбома</button>';
         h += '<button class="btn btn-accent" onclick="showOrder()">📦 Заказ под привоз</button>';
         h += '<button class="btn btn-danger" onclick="deletePlayer()">🗑 Удалить</button>';
-        h += '<h3 style="margin-top:24px;color:var(--dim);">📋 История</h3>';
+        h += '<h3 style="margin-top:20px;color:var(--dim);">📋 История</h3>';
         if (!p.history || !p.history.length) h += '<div class="empty">Нет операций</div>';
         else {
             var hist = p.history.slice().reverse();
@@ -304,159 +188,34 @@ function renderPlayers() {
     return h;
 }
 function openPlayer(n) { currentPlayer = n; render(); }
-function showAddPlayer() { openModal('<h2>✨ Новый игрок</h2><input id="pName" placeholder="Имя"><input id="pBal" type="number" value="0"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addPlayer()">Создать</button></div>'); }
-async function addPlayer() { var n = document.getElementById('pName').value.trim(); if (!n) return alert('Введи!'); var b = parseInt(document.getElementById('pBal').value) || 0; if (appData.players[n]) return alert('Уже есть!'); appData.players[n] = { balance: b, history: b > 0 ? [{ date: new Date().toLocaleString('ru-RU'), amount: b, type: 'add', card: 'Старт' }] : [] }; closeModal(); await saveData(); render(); showToast('✅ Добавлено'); }
-function showAddFunds() { openModal('<h2>💰 ' + currentPlayer + '</h2><input id="amount" type="number" value="500"><input id="note" placeholder="Примечание"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addFunds()">Зачислить</button></div>'); }
-async function addFunds() { var a = parseInt(document.getElementById('amount').value) || 0; if (a <= 0) return; appData.players[currentPlayer].balance += a; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: a, type: 'add', card: document.getElementById('note').value.trim() || 'Пополнение' }); closeModal(); await saveData(); render(); showToast('✅ Пополнено'); }
-function showSpend() { openModal('<h2>🛒 ' + currentPlayer + '</h2><input id="spendCard" placeholder="Карта"><input id="spendAmount" type="number"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-gold" style="background:var(--gold);color:#000;" onclick="spendFunds()">Списать</button></div>'); }
-async function spendFunds() { var a = parseInt(document.getElementById('spendAmount').value) || 0; if (a <= 0) return; if (appData.players[currentPlayer].balance < a) return alert('Недостаточно!'); appData.players[currentPlayer].balance -= a; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: a, type: 'spend', card: document.getElementById('spendCard').value.trim() || 'Карта' }); closeModal(); await saveData(); render(); showToast('✅ Списано'); }
-function showOrder() { openModal('<h2>📦 ' + currentPlayer + '</h2><input id="orderCard" placeholder="Карта"><input id="orderBase" type="number" placeholder="Цена" oninput="updateOrderTotal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderComm" checked onchange="updateOrderTotal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotal">0 ₽</b></p><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-accent" style="background:var(--accent);" onclick="placeOrderFromPlayer()">Заказать</button></div>'); }
+function showAddPlayer() { openModal('<h2>✨ Новый игрок</h2><input id="pName" placeholder="Имя"><input id="pBal" type="number" value="0"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addPlayer()">Создать</button></div>'); }
+function addPlayer() { var n = document.getElementById('pName').value.trim(); if (!n) return alert('Введи!'); var b = parseInt(document.getElementById('pBal').value) || 0; if (appData.players[n]) return alert('Уже есть!'); appData.players[n] = { balance: b, history: b > 0 ? [{ date: new Date().toLocaleString('ru-RU'), amount: b, type: 'add', card: 'Старт' }] : [] }; saveData(); closeModal(); render(); }
+function showAddFunds() { openModal('<h2>💰 ' + currentPlayer + '</h2><input id="amount" type="number" value="500"><input id="note" placeholder="Примечание"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-primary" onclick="addFunds()">Зачислить</button></div>'); }
+function addFunds() { var a = parseInt(document.getElementById('amount').value) || 0; if (a <= 0) return; appData.players[currentPlayer].balance += a; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: a, type: 'add', card: document.getElementById('note').value.trim() || 'Пополнение' }); saveData(); closeModal(); render(); }
+function showSpend() { openModal('<h2>🛒 ' + currentPlayer + '</h2><input id="spendCard" placeholder="Карта"><input id="spendAmount" type="number"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-gold" style="background:var(--gold);color:#000;" onclick="spendFunds()">Списать</button></div>'); }
+function spendFunds() { var a = parseInt(document.getElementById('spendAmount').value) || 0; if (a <= 0) return; if (appData.players[currentPlayer].balance < a) return alert('Недостаточно!'); appData.players[currentPlayer].balance -= a; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: a, type: 'spend', card: document.getElementById('spendCard').value.trim() || 'Карта' }); saveData(); closeModal(); render(); }
+function showOrder() { openModal('<h2>📦 ' + currentPlayer + '</h2><input id="orderCard" placeholder="Карта"><input id="orderBase" type="number" placeholder="Цена" oninput="updateOrderTotal()"><div class="toggle-row"><span>+20%</span><label class="switch"><input type="checkbox" id="orderComm" checked onchange="updateOrderTotal()"><span class="slider"></span></label></div><p style="text-align:right;">Итог: <b id="orderTotal">0 ₽</b></p><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-accent" style="background:var(--accent);" onclick="placeOrder()">Заказать</button></div>'); }
 function updateOrderTotal() { document.getElementById('orderTotal').innerText = ((document.getElementById('orderComm').checked ? Math.round((parseInt(document.getElementById('orderBase').value) || 0) * 1.2) : (parseInt(document.getElementById('orderBase').value) || 0))) + ' ₽'; }
-async function placeOrderFromPlayer() { var c = document.getElementById('orderCard').value.trim(), b = parseInt(document.getElementById('orderBase').value) || 0, cm = document.getElementById('orderComm').checked, t = cm ? Math.round(b * 1.2) : b; if (!c || t <= 0) return alert('Заполни!'); if (appData.players[currentPlayer].balance < t) return alert('Недостаточно!'); appData.players[currentPlayer].balance -= t; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: t, type: 'order', card: c + ' (ЗАКАЗ)' }); appData.orders.push({ id: genId(), playerName: currentPlayer, card: c, amount: t, status: 'pending', date: new Date().toLocaleString('ru-RU') }); closeModal(); await saveData(); render(); showToast('✅ Заказ создан'); }
-async function deletePlayer() { if (!confirm('Удалить?')) return; delete appData.players[currentPlayer]; currentPlayer = null; await saveData(); render(); showToast('✅ Удалено'); }
+function placeOrder() { var c = document.getElementById('orderCard').value.trim(), b = parseInt(document.getElementById('orderBase').value) || 0, cm = document.getElementById('orderComm').checked, t = cm ? Math.round(b * 1.2) : b; if (!c || t <= 0) return alert('Заполни!'); if (appData.players[currentPlayer].balance < t) return alert('Недостаточно!'); appData.players[currentPlayer].balance -= t; appData.players[currentPlayer].history.push({ date: new Date().toLocaleString('ru-RU'), amount: t, type: 'order', card: c + ' (ЗАКАЗ)' }); appData.orders.push({ id: genId(), playerName: currentPlayer, card: c, amount: t, status: 'pending', date: new Date().toLocaleString('ru-RU') }); saveData(); closeModal(); render(); }
+function deletePlayer() { if (!confirm('Удалить?')) return; delete appData.players[currentPlayer]; currentPlayer = null; saveData(); render(); }
 
-// ═══════════════ SALE ═══════════════
-var autocompleteTimer = null;
-function renderSale() {
-    var h = '', cards = appData.saleCards || [];
-    h += '<div class="stats">💵 Карт: <b>' + cards.length + '</b></div>';
-    h += '<button class="btn btn-sell-btn" onclick="showAddSaleCard()">+ Добавить карту</button>';
-    if (cards.length) h += '<button class="btn btn-danger" style="margin-top:10px;" onclick="clearSale()">🗑 Очистить</button>';
-    if (!cards.length) h += '<div class="empty">Пусто</div>';
-    else for (var i = 0; i < cards.length; i++) {
-        var c = cards[i];
-        h += '<div class="sale-item"><h3>🃏 ' + (c.name || '???') + '</h3>';
-        if (c.set || c.collector) { h += '<div class="meta">'; if (c.set) h += '<span>📗 ' + c.set.toUpperCase() + '</span>'; if (c.collector) h += '<span>#' + c.collector + '</span>'; if (c.foil) h += '<span style="color:var(--gold);">✨ FOIL</span>'; h += '</div>'; }
-        if (c.oracle) h += '<div class="oracle">' + c.oracle + '</div>';
-        h += '<div class="price">' + (c.price ? c.price + ' ₽' : '<span class="no-price">Цена не задана</span>') + '</div>';
-        h += '<div class="sale-actions"><button class="btn btn-small btn-sell-btn" onclick="sellToPlayer(\'' + c.id + '\')">💵</button><button class="btn btn-small btn-price-btn" onclick="setSalePrice(\'' + c.id + '\')">💰</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteSaleCard(\'' + c.id + '\')">🗑</button></div></div>';
-    }
-    return h;
-}
-function showAddSaleCard() { openModal('<h2>💵 Карта</h2><div class="autocomplete-wrap"><input id="saleName" placeholder="Название" autocomplete="off" oninput="onNameInput()" onkeydown="onNameKeydown(event)"><div class="autocomplete-list" id="autocompleteList"></div></div><p id="oraclePreview"></p><input id="saleSet" placeholder="Сет"><input id="saleCollector" placeholder="Номер"><select id="saleCondition"><option>Near Mint</option><option>Lightly Played</option></select><div class="toggle-row"><span>Фойл</span><label class="switch"><input type="checkbox" id="saleFoil"><span class="slider"></span></label></div><input id="salePrice" type="number" placeholder="Цена"><input type="hidden" id="saleOracle"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="addSaleCard()">Добавить</button></div>'); }
-function onNameInput() { var v = document.getElementById('saleName').value.trim(), l = document.getElementById('autocompleteList'); if (autocompleteTimer) clearTimeout(autocompleteTimer); if (v.length < 2) { l.style.display = 'none'; return; } autocompleteTimer = setTimeout(function() { fetch('https://api.scryfall.com/cards/autocomplete?q=' + encodeURIComponent(v)).then(function(r) { return r.json(); }).then(function(j) { l.innerHTML = ''; if (j.data && j.data.length > 0) { for (var i = 0; i < Math.min(j.data.length, 8); i++) { var d = document.createElement('div'); d.textContent = j.data[i]; d.onclick = function() { document.getElementById('saleName').value = this.textContent; l.style.display = 'none'; fetchOracle(this.textContent); }; l.appendChild(d); } l.style.display = 'block'; } else l.style.display = 'none'; }).catch(function() { l.style.display = 'none'; }); }, 300); }
-function onNameKeydown(e) { if (e.key === 'Enter') { e.preventDefault(); var f = document.getElementById('autocompleteList').querySelector('div'); if (f) f.click(); else fetchOracle(document.getElementById('saleName').value.trim()); } }
-function fetchOracle(n) { var o = document.getElementById('oraclePreview'); if (!n) return; o.textContent = '...'; fetch('https://api.scryfall.com/cards/named?exact=' + encodeURIComponent(n)).then(function(r) { return r.json(); }).then(function(j) { if (j.oracle_text) { o.textContent = '📜 ' + j.oracle_text; document.getElementById('saleOracle').value = j.oracle_text; } else o.textContent = '-'; }).catch(function() { o.textContent = '-'; }); }
-async function addSaleCard() { var n = document.getElementById('saleName').value.trim(); if (!n) return alert('Введи!'); appData.saleCards.push({ id: genId(), name: n, set: document.getElementById('saleSet').value.trim(), collector: document.getElementById('saleCollector').value.trim(), condition: document.getElementById('saleCondition').value, foil: document.getElementById('saleFoil').checked, price: document.getElementById('salePrice').value.trim(), oracle: document.getElementById('saleOracle').value.trim() }); closeModal(); await saveData(); render(); showToast('✅ Добавлено'); }
-function setSalePrice(id) { var c = appData.saleCards.find(function(x) { return x.id === id; }); if (!c) return; openModal('<h2>💰</h2><p>' + c.name + '</p><input id="newPrice" type="number" value="' + (c.price || '') + '"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-price-btn" onclick="saveSalePrice(\'' + id + '\')">Сохранить</button></div>'); }
-async function saveSalePrice(id) { var c = appData.saleCards.find(function(x) { return x.id === id; }); if (!c) return; c.price = document.getElementById('newPrice').value.trim(); closeModal(); await saveData(); render(); showToast('✅ Цена сохранена'); }
-function sellToPlayer(id) { var c = appData.saleCards.find(function(x) { return x.id === id; }); if (!c || !c.price) return alert('Установи цену!'); var n = Object.keys(appData.players).sort(); if (!n.length) return alert('Нет игроков!'); var h = '<h2>💵</h2><p>' + c.name + '</p><p style="font-size:22px;"><b>' + c.price + ' ₽</b></p><select id="sellPlayer">'; for (var i = 0; i < n.length; i++) h += '<option>' + n[i] + ' (' + (appData.players[n[i]].balance || 0) + ' ₽)</option>'; h += '</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-sell-btn" onclick="confirmSellToPlayer(\'' + id + '\')">Продать</button></div>'; openModal(h); }
-async function confirmSellToPlayer(id) { var pl = document.getElementById('sellPlayer').value.split(' (')[0]; var c = appData.saleCards.find(function(x) { return x.id === id; }); if (!c) return; var pr = parseInt(c.price) || 0; if (appData.players[pl].balance < pr) return alert('Недостаточно!'); appData.players[pl].balance -= pr; appData.players[pl].history.push({ date: new Date().toLocaleString('ru-RU'), amount: pr, type: 'spend', card: c.name }); appData.saleCards = appData.saleCards.filter(function(x) { return x.id !== id; }); closeModal(); await saveData(); render(); showToast('✅ Продано!'); }
-async function deleteSaleCard(id) { if (!confirm('Удалить?')) return; appData.saleCards = appData.saleCards.filter(function(c) { return c.id !== id; }); await saveData(); render(); showToast('✅ Удалено'); }
-async function clearSale() { if (!confirm('Очистить?')) return; appData.saleCards = []; await saveData(); render(); showToast('✅ Очищено'); }
+// ═══════════ ОСТАЛЬНЫЕ ВКЛАДКИ (ЗАГОТОВКИ) ═══════════
+function renderSale() { return '<button class="btn btn-info" onclick="showAddSaleCard()">+ Добавить карту</button><div class="empty">💵 На продажу</div>'; }
+function showAddSaleCard() { openModal('<h2>💵 Карта</h2><input id="saleName" placeholder="Название"><input id="salePrice" type="number" placeholder="Цена"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="addSaleCard()">Добавить</button></div>'); }
+function addSaleCard() { var n = document.getElementById('saleName').value.trim(); if (!n) return; appData.saleCards.push({ id: genId(), name: n, price: document.getElementById('salePrice').value.trim() }); saveData(); closeModal(); render(); }
+function renderOrders() { var h = '', pending = appData.orders.filter(function(o) { return o.status === 'pending'; }); if (!pending.length) h += '<div class="empty">📭 Заказов нет</div>'; else for (var i = 0; i < pending.length; i++) { var o = pending[i]; h += '<div class="list-item"><div><b>' + o.playerName + '</b><br>' + o.card + '</div><span>' + o.amount + ' ₽</span></div>'; } return h; }
+function renderTasks() { return '<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button><div class="empty">📋 Задачи</div>'; }
+function showAddFolder() { openModal('<h2>📁 Папка</h2><input id="folderName" placeholder="Название"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="addFolder()">Создать</button></div>'); }
+function addFolder() { var n = document.getElementById('folderName').value.trim(); if (!n) return; appData.taskFolders.push({ id: genId(), name: n, tasks: [] }); saveData(); closeModal(); render(); }
+function renderTournaments() { return '<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новая папка</button><div class="empty">🏆 Турниры</div>'; }
+function showAddTournament() { openModal('<h2>🏟 Папка турнира</h2><input id="trnName" placeholder="Название"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>'); }
+function addTournament() { var n = document.getElementById('trnName').value.trim(); if (!n) return; appData.tournaments.push({ id: genId(), name: n, participants: [] }); saveData(); closeModal(); render(); }
+function renderChallenges() { return '<button class="btn btn-challenge" onclick="showAddChallengeFolder()">🔥 Новая папка</button><div class="empty">🔥 Челенджи</div>'; }
+function showAddChallengeFolder() { openModal('<h2>🔥 Папка</h2><input id="cfName" placeholder="Название"><div class="btn-row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="addChallengeFolder()">Создать</button></div>'); }
+function addChallengeFolder() { var n = document.getElementById('cfName').value.trim(); if (!n) return; appData.challengeFolders.push({ id: genId(), name: n, challenges: [] }); saveData(); closeModal(); render(); }
 
-// ═══════════════ ORDERS ═══════════════
-function renderOrders() {
-    var h = '', pending = [], done = [];
-    for (var i = 0; i < appData.orders.length; i++) { if (appData.orders[i].status === 'pending') pending.push(appData.orders[i]); else done.push(appData.orders[i]); }
-    if (!pending.length && !done.length) h += '<div class="empty">📭 Заказов нет</div>';
-    if (pending.length) { h += '<h3 style="color:var(--accent);margin:20px 0 10px;">⏳ Ожидают (' + pending.length + ')</h3>'; for (var i = 0; i < pending.length; i++) { var o = pending[i]; h += '<div class="list-item" style="border-left-color:var(--accent);"><div><b>' + o.playerName + '</b><br>' + o.card + '<br><small>' + o.date + '</small></div><div style="text-align:right;"><span>' + o.amount + ' ₽</span><br><button class="btn btn-small" style="background:var(--success);" onclick="completeOrder(\'' + o.id + '\')">✅</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteOrder(\'' + o.id + '\')">🗑</button></div></div>'; } }
-    if (done.length) { h += '<h3 style="color:var(--dim);margin-top:20px;">✅ Выполненные</h3>'; for (var i = done.length - 1; i >= Math.max(0, done.length - 5); i--) h += '<div class="list-item" style="opacity:0.6;"><div><b>' + done[i].playerName + '</b><br>' + done[i].card + '</div><div>' + done[i].amount + ' ₽</div></div>'; }
-    return h;
-}
-async function completeOrder(id) { var o = appData.orders.find(function(x) { return x.id === id; }); if (o) o.status = 'done'; await saveData(); render(); showToast('✅ Выполнено'); }
-async function deleteOrder(id) { if (!confirm('Удалить?')) return; appData.orders = appData.orders.filter(function(o) { return o.id !== id; }); await saveData(); render(); showToast('✅ Удалено'); }
-
-// ═══════════════ TASKS ═══════════════
-function renderTasks() {
-    var h = '', folds = appData.taskFolders || [];
-    if (currentFolder) {
-        var fo = folds.find(function(f) { return f.id === currentFolder; });
-        if (!fo) { currentFolder = null; return renderTasks(); }
-        var ts = fo.tasks || [];
-        h += '<div class="breadcrumb"><span onclick="goBackFolder()">📁 Все папки</span> → 📂 ' + fo.name + '</div>';
-        h += '<button class="btn btn-info" onclick="showAddTask()">+ Новая задача</button>';
-        h += '<div class="stats">📋 Задач: <b>' + ts.length + '</b> | ✅ <b>' + ts.filter(function(t) { return t.done; }).length + '</b></div>';
-        if (!ts.length) h += '<div class="empty">Папка пуста</div>';
-        else { ts.sort(function(a, b) { return (a.done ? 1 : 0) - (b.done ? 1 : 0); }); for (var i = 0; i < ts.length; i++) { var t = ts[i]; h += '<div class="task-item' + (t.done ? ' task-done' : '') + '"><div style="display:flex;justify-content:space-between;"><h3>' + (t.done ? '✅ ' : '⬜ ') + (t.title || '') + '</h3>' + (t.price ? '<span style="color:var(--gold);">' + t.price + ' ₽</span>' : '') + '</div>'; if (t.desc) h += '<div class="task-meta">' + t.desc + '</div>'; if (t.link) h += '<div class="task-link">🔗 <a href="' + t.link + '" target="_blank">' + t.link + '</a></div>'; h += '<div class="btn-row" style="margin-top:10px;"><button class="btn btn-small btn-sell-btn" onclick="toggleTask(\'' + t.id + '\')">' + (t.done ? '↩' : '✅') + '</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteTask(\'' + t.id + '\')">🗑</button></div></div>'; } }
-        h += '<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-danger" onclick="deleteFolder(\'' + fo.id + '\')">🗑 Удалить папку</button></div>';
-        return h;
-    }
-    h += '<button class="btn btn-warning" onclick="showAddFolder()">📁 Новая папка</button>';
-    if (!folds.length) h += '<div class="empty">Нет папок</div>';
-    else for (var i = 0; i < folds.length; i++) { var f = folds[i]; h += '<div class="folder-item" onclick="openFolder(\'' + f.id + '\')"><div><h3>📂 ' + (f.name || 'Без имени') + '</h3><div class="folder-stats">' + (f.tasks || []).length + ' задач</div></div><span>→</span></div>'; }
-    return h;
-}
-function openFolder(id) { currentFolder = id; render(); }
-function showAddFolder() { openModal('<h2>📁</h2><input id="folderName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-warning" onclick="addFolder()">Создать</button></div>'); }
-async function addFolder() { var n = document.getElementById('folderName').value.trim(); if (!n) return; appData.taskFolders.push({ id: genId(), name: n, tasks: [] }); closeModal(); await saveData(); render(); showToast('✅ Папка создана'); }
-async function deleteFolder(id) { if (!confirm('Удалить?')) return; appData.taskFolders = appData.taskFolders.filter(function(f) { return f.id !== id; }); currentFolder = null; await saveData(); render(); showToast('✅ Удалено'); }
-function showAddTask() { openModal('<h2>📋</h2><input id="taskTitle" placeholder="Название"><textarea id="taskDesc" placeholder="Описание"></textarea><input id="taskPrice" type="number" placeholder="Цена"><input id="taskLink" placeholder="Ссылка"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-info" onclick="addTask()">Создать</button></div>'); }
-async function addTask() { var t = document.getElementById('taskTitle').value.trim(); if (!t) return; var fo = appData.taskFolders.find(function(f) { return f.id === currentFolder; }); if (!fo) return; fo.tasks.push({ id: genId(), title: t, desc: document.getElementById('taskDesc').value.trim(), price: document.getElementById('taskPrice').value.trim(), link: document.getElementById('taskLink').value.trim(), done: false, date: new Date().toLocaleString('ru-RU') }); closeModal(); await saveData(); render(); showToast('✅ Задача добавлена'); }
-async function toggleTask(id) { var fo = appData.taskFolders.find(function(f) { return f.id === currentFolder; }); if (!fo) return; var t = fo.tasks.find(function(x) { return x.id === id; }); if (t) t.done = !t.done; await saveData(); render(); }
-async function deleteTask(id) { if (!confirm('Удалить?')) return; var fo = appData.taskFolders.find(function(f) { return f.id === currentFolder; }); if (!fo) return; fo.tasks = fo.tasks.filter(function(t) { return t.id !== id; }); await saveData(); render(); }
-
-// ═══════════════ TOURNAMENTS ═══════════════
-function renderTournaments() {
-    var h = '', trns = appData.tournaments || [];
-    if (currentTournament) {
-        var trn = trns.find(function(t) { return t.id === currentTournament; });
-        if (!trn) { currentTournament = null; return renderTournaments(); }
-        var parts = trn.participants || [], pc = parts.filter(function(p) { return p.paid; }).length, pf = 0;
-        for (var i = 0; i < parts.length; i++) { if (parts[i].paid) pf += (parseInt(parts[i].entryFee) || 500); }
-        h += '<div class="breadcrumb"><span onclick="goBackTournament()">🏆 Все папки</span> → 🏟 ' + trn.name + '</div>';
-        h += '<div class="prize-fund"><h3>🏆 ПРИЗОВОЙ ФОНД</h3><div class="amount">' + pf.toLocaleString() + ' ₽</div><div style="font-size:14px;color:var(--dim);">Оплатили: ' + pc + ' из ' + parts.length + '</div></div>';
-        h += '<div class="stats">👥 Игроков: <b>' + parts.length + '</b> | 💰 Оплатили: <b>' + pc + '</b></div>';
-        h += '<div style="display:flex;gap:10px;margin-bottom:14px;"><button class="btn btn-tournament" style="flex:1;" onclick="showAddParticipant()">+ Игрок</button><button class="btn btn-export" style="flex:1;" onclick="exportTournament(\'' + trn.id + '\')">📥 Excel</button></div>';
-        if (!parts.length) h += '<div class="empty">Нет игроков</div>';
-        else for (var i = 0; i < parts.length; i++) {
-            var p = parts[i];
-            h += '<div class="participant-row"><div class="info"><h4>👤 ' + (p.name || '???') + '</h4><div class="deck">🔗 ' + (p.deckLink ? '<a href="' + p.deckLink + '" target="_blank">' + p.deckLink + '</a>' : '<span style="color:var(--dim);">—</span>') + '</div>';
-            if (p.commander || p.partner || p.companion) { h += '<div class="commanders">'; if (p.commander) h += '🎖 ' + p.commander + ' '; if (p.partner) h += '🤝 ' + p.partner + ' '; if (p.companion) h += '🐾 ' + p.companion; h += '</div>'; }
-            h += '</div><div class="actions"><button class="btn btn-small" style="background:var(--info);color:white;" onclick="editParticipant(\'' + p.id + '\')">✏️</button><div class="paid-badge ' + (p.paid ? 'paid' : 'unpaid') + '" onclick="togglePaid(\'' + p.id + '\')">' + (p.paid ? '✅ Оплатил' : '❌ Не оплатил') + '</div><button class="btn btn-small" style="background:var(--danger);" onclick="deleteParticipant(\'' + p.id + '\')">🗑</button></div></div>';
-        }
-        h += '<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-danger" onclick="deleteTournament(\'' + trn.id + '\')">🗑 Удалить</button></div>';
-        return h;
-    }
-    h += '<button class="btn btn-tournament" onclick="showAddTournament()">🏟 Новая папка турнира</button>';
-    if (!trns.length) h += '<div class="empty">Нет папок</div>';
-    else for (var i = 0; i < trns.length; i++) { var t = trns[i]; var pc = (t.participants || []).length; var pp = (t.participants || []).filter(function(p) { return p.paid; }).length; h += '<div class="folder-item tournament" onclick="openTournament(\'' + t.id + '\')"><div><h3>🏟 ' + (t.name || 'Без имени') + '</h3><div class="folder-stats">' + pc + ' игроков, ' + pp + ' оплатили</div></div><span>→</span></div>'; }
-    return h;
-}
-function openTournament(id) { currentTournament = id; render(); }
-function showAddTournament() { openModal('<h2>🏟 Новая папка</h2><input id="trnName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addTournament()">Создать</button></div>'); }
-async function addTournament() { var n = document.getElementById('trnName').value.trim(); if (!n) return; appData.tournaments.push({ id: genId(), name: n, participants: [] }); closeModal(); await saveData(); render(); showToast('✅ Папка создана'); }
-async function deleteTournament(id) { if (!confirm('Удалить?')) return; appData.tournaments = appData.tournaments.filter(function(t) { return t.id !== id; }); currentTournament = null; await saveData(); render(); showToast('✅ Удалено'); }
-function showAddParticipant() { openModal('<h2>👤 Игрок</h2><input id="partName" placeholder="Имя"><input id="partDeckLink" placeholder="Ссылка на колоду"><input id="partCommander" placeholder="Командир"><input id="partPartner" placeholder="Партнёр"><input id="partCompanion" placeholder="Компаньон"><input id="partFee" type="number" value="500"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="addParticipant()">Добавить</button></div>'); }
-async function addParticipant() { var n = document.getElementById('partName').value.trim(); if (!n) return; var trn = appData.tournaments.find(function(t) { return t.id === currentTournament; }); if (!trn) return; trn.participants.push({ id: genId(), name: n, deckLink: document.getElementById('partDeckLink').value.trim(), commander: document.getElementById('partCommander').value.trim(), partner: document.getElementById('partPartner').value.trim(), companion: document.getElementById('partCompanion').value.trim(), entryFee: document.getElementById('partFee').value.trim() || '500', paid: false }); closeModal(); await saveData(); render(); showToast('✅ Добавлен'); }
-function editParticipant(id) { var trn = appData.tournaments.find(function(t) { return t.id === currentTournament; }); if (!trn) return; var p = trn.participants.find(function(x) { return x.id === id; }); if (!p) return; var h = '<h2>✏️</h2><input id="editPartName" value="' + (p.name || '') + '"><input id="editPartDeckLink" value="' + (p.deckLink || '') + '"><input id="editPartCommander" value="' + (p.commander || '') + '"><input id="editPartPartner" value="' + (p.partner || '') + '"><input id="editPartCompanion" value="' + (p.companion || '') + '"><input id="editPartFee" type="number" value="' + (p.entryFee || '500') + '"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-tournament" onclick="saveParticipant(\'' + id + '\')">Сохранить</button></div>'; openModal(h); }
-async function saveParticipant(id) { var trn = appData.tournaments.find(function(t) { return t.id === currentTournament; }); if (!trn) return; var p = trn.participants.find(function(x) { return x.id === id; }); if (!p) return; p.name = document.getElementById('editPartName').value.trim(); p.deckLink = document.getElementById('editPartDeckLink').value.trim(); p.commander = document.getElementById('editPartCommander').value.trim(); p.partner = document.getElementById('editPartPartner').value.trim(); p.companion = document.getElementById('editPartCompanion').value.trim(); p.entryFee = document.getElementById('editPartFee').value.trim() || '500'; closeModal(); await saveData(); render(); showToast('✅ Сохранено'); }
-async function togglePaid(id) { var trn = appData.tournaments.find(function(t) { return t.id === currentTournament; }); if (!trn) return; var p = trn.participants.find(function(x) { return x.id === id; }); if (p) p.paid = !p.paid; await saveData(); render(); }
-async function deleteParticipant(id) { if (!confirm('Удалить?')) return; var trn = appData.tournaments.find(function(t) { return t.id === currentTournament; }); if (!trn) return; trn.participants = trn.participants.filter(function(p) { return p.id !== id; }); await saveData(); render(); }
-function exportTournament(id) { var trn = appData.tournaments.find(function(t) { return t.id === id; }); if (!trn) return; var p = trn.participants || [], pc = p.filter(function(x) { return x.paid; }).length, pf = 0; for (var i = 0; i < p.length; i++) { if (p[i].paid) pf += (parseInt(p[i].entryFee) || 500); } var data = [['Турнир:', trn.name || ''], ['Призовой фонд:', pf + ' ₽'], ['Оплатили:', pc + ' из ' + p.length], [], ['Игрок', 'Ссылка на колоду', 'Командир', 'Партнёр', 'Компаньон', 'Взнос', 'Статус']]; for (var i = 0; i < p.length; i++) { data.push([p[i].name || '', p[i].deckLink || '', p[i].commander || '', p[i].partner || '', p[i].companion || '', (p[i].entryFee || '500') + ' ₽', p[i].paid ? 'Оплатил' : 'Не оплатил']); } var wb = XLSX.utils.book_new(); var ws = XLSX.utils.aoa_to_sheet(data); XLSX.utils.book_append_sheet(wb, ws, 'Турнир'); XLSX.writeFile(wb, (trn.name || 'tournament') + '.xlsx'); showToast('✅ Excel скачан'); }
-
-// ═══════════════ CHALLENGES ═══════════════
-function renderChallenges() {
-    var h = '', folds = appData.challengeFolders || [];
-    if (currentChallengeFolder) {
-        var cf = folds.find(function(f) { return f.id === currentChallengeFolder; });
-        if (!cf) { currentChallengeFolder = null; return renderChallenges(); }
-        var challenges = cf.challenges || [];
-        var completedCount = challenges.filter(function(c) { return c.done; }).length;
-        h += '<div class="breadcrumb"><span onclick="goBackChallengeFolder()">🔥 Все папки</span> → 📂 ' + cf.name + '</div>';
-        h += '<div class="stats">🔥 Челенджей: <b>' + challenges.length + '</b> | ✅ Выполнено: <b>' + completedCount + '</b></div>';
-        h += '<button class="btn btn-challenge" onclick="showAddChallenge()">+ Новый челендж</button>';
-        if (!challenges.length) h += '<div class="empty">Нет челенджей</div>';
-        else { challenges.sort(function(a, b) { return (a.done ? 1 : 0) - (b.done ? 1 : 0); }); for (var i = 0; i < challenges.length; i++) { var ch = challenges[i]; h += '<div class="challenge-item' + (ch.done ? ' done' : '') + '"><h4>' + (ch.done ? '✅ ' : '🔥 ') + (ch.title || 'Без названия') + '</h4>'; if (ch.conditions) h += '<div class="ch-conditions">📋 ' + ch.conditions + '</div>'; h += '<div class="ch-meta">'; if (ch.time) h += '<span>⏰ ' + ch.time + '</span>'; if (ch.player) h += '<span>👤 ' + ch.player + '</span>'; h += '</div>'; h += '<div class="ch-actions"><button class="btn btn-small done-badge ' + (ch.done ? 'completed' : 'pending') + '" onclick="toggleChallenge(\'' + ch.id + '\')">' + (ch.done ? '✅ Выполнен' : '⬜ Выполнить') + '</button><button class="btn btn-small" style="background:var(--danger);" onclick="deleteChallenge(\'' + ch.id + '\')">🗑</button></div></div>'; } }
-        h += '<div style="margin-top:20px;border-top:1px solid #333;padding-top:14px;"><button class="btn btn-danger" onclick="deleteChallengeFolder(\'' + cf.id + '\')">🗑 Удалить</button></div>';
-        return h;
-    }
-    h += '<button class="btn btn-challenge" onclick="showAddChallengeFolder()">🔥 Новая папка челенджей</button>';
-    if (!folds.length) h += '<div class="empty">Нет папок</div>';
-    else for (var i = 0; i < folds.length; i++) { var f = folds[i]; var cc = (f.challenges || []).length; var cd = (f.challenges || []).filter(function(c) { return c.done; }).length; h += '<div class="folder-item challenge" onclick="openChallengeFolder(\'' + f.id + '\')"><div><h3>🔥 ' + (f.name || 'Без имени') + '</h3><div class="folder-stats">' + cc + ' челенджей, ' + cd + ' выполнено</div></div><span>→</span></div>'; }
-    return h;
-}
-function openChallengeFolder(id) { currentChallengeFolder = id; render(); }
-function showAddChallengeFolder() { openModal('<h2>🔥 Новая папка</h2><input id="cfName" placeholder="Название"><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="addChallengeFolder()">Создать</button></div>'); }
-async function addChallengeFolder() { var n = document.getElementById('cfName').value.trim(); if (!n) return; appData.challengeFolders.push({ id: genId(), name: n, challenges: [] }); closeModal(); await saveData(); render(); showToast('✅ Папка создана'); }
-async function deleteChallengeFolder(id) { if (!confirm('Удалить?')) return; appData.challengeFolders = appData.challengeFolders.filter(function(f) { return f.id !== id; }); currentChallengeFolder = null; await saveData(); render(); showToast('✅ Удалено'); }
-function showAddChallenge() { var playerNames = Object.keys(appData.players).sort(); var h = '<h2>🔥 Новый челендж</h2><input id="chTitle" placeholder="Название"><textarea id="chConditions" placeholder="Условия"></textarea><input id="chTime" placeholder="Время"><select id="chPlayer"><option value="">— Выбери игрока —</option>'; for (var i = 0; i < playerNames.length; i++) h += '<option value="' + playerNames[i] + '">' + playerNames[i] + '</option>'; h += '</select><div class="row"><button class="btn" onclick="closeModal()">Отмена</button><button class="btn btn-challenge" onclick="addChallenge()">Создать</button></div>'; openModal(h); }
-async function addChallenge() { var title = document.getElementById('chTitle').value.trim(); if (!title) return alert('Введи название!'); var cf = appData.challengeFolders.find(function(f) { return f.id === currentChallengeFolder; }); if (!cf) return; cf.challenges.push({ id: genId(), title: title, conditions: document.getElementById('chConditions').value.trim(), time: document.getElementById('chTime').value.trim(), player: document.getElementById('chPlayer').value, done: false }); closeModal(); await saveData(); render(); showToast('✅ Челендж создан'); }
-async function toggleChallenge(id) { var cf = appData.challengeFolders.find(function(f) { return f.id === currentChallengeFolder; }); if (!cf) return; var ch = cf.challenges.find(function(x) { return x.id === id; }); if (ch) ch.done = !ch.done; await saveData(); render(); }
-async function deleteChallenge(id) { if (!confirm('Удалить?')) return; var cf = appData.challengeFolders.find(function(f) { return f.id === currentChallengeFolder; }); if (!cf) return; cf.challenges = cf.challenges.filter(function(c) { return c.id !== id; }); await saveData(); render(); }
-
-// ═══════════════ ЗАПУСК ═══════════════
-loadData().then(function() { render(); });
+// ═══════════ СТАРТ ═══════════
+loadData(); render();
 </script>
 </body>
 </html>
